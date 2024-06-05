@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int cnt[105][26];
+    vector<string> commonChars(vector<string>& words) {
+        int n = words.size();
+        vector<string>v;
+        int pre[26] = {0};
+        for(int i = 0; i < words.size(); i++){
+            for(char j : words[i]){
+                cnt[i][j - 'a']++;
+            }
+            for(int j = 0; j < 26; j++){
+                if(i == 0) pre[j] = cnt[i][j];
+                else pre[j] = min(pre[j], cnt[i][j]);
+            }
+        }
+        for(int i = 0; i < 26; i++){
+
+            for(int j = 0; j < pre[i]; j++){
+                string s;
+                s += i + 'a';
+                v.push_back(s);
+            }
+            
+        }
+        return v;
+    }
+};
