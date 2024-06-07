@@ -1,0 +1,45 @@
+#define fi first
+#define se second
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int ma = -1, ind = 0, ans = 0;
+        for(int i = 0; i < height.size(); i++){
+            if(height[i] > ma){
+                ma = height[i];
+                ind = i;
+            }
+        }
+        set<pair<int, int>> s, s1;
+        for(int i = ind - 1; i >= 0; i--) s.insert({height[i], i});
+        for(int i = ind + 1; i < height.size(); i++) s1.insert({height[i], i});
+        int left = ind, right = ind;
+        while(1){
+            //cout << left << "  1 " << ans << endl;
+            if(left == 0) break;
+            auto it = s.end();
+            it--;
+            int c = it -> fi, d = it->se;
+            s.erase({c, d});
+            for(int i = d; i < left; i++){
+                ans += (c - height[i]);
+                s.erase({height[i], i});
+            }
+            left = d;
+        }
+        while(1){
+            //cout << right << " 2 " << ans << endl;
+            if(right == height.size() - 1) break;
+            auto it = s1.end();
+            it--;
+            int c = it -> fi, d = it->se;
+            s1.erase({c, d});
+            for(int i = d; i > right; i--){
+                ans += (c - height[i]);
+                s1.erase({height[i], i});
+            }
+            right = d;
+        }
+        return ans;
+    }
+};
