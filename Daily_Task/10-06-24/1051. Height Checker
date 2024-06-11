@@ -1,0 +1,22 @@
+class Solution {
+public:
+    int pre[110] = {0};
+    int heightChecker(vector<int>& heights) {
+        int n = heights.size();
+        for(int i = 0; i < n; i++){
+            int c = heights[i];
+            pre[c]++;
+        }
+        int i = 0, ans = 0;
+        for(int j = 1; j <= 100; j++){
+            int c = pre[j];
+            while(c--){
+                if(heights[i] != j){
+                    ans++;
+                }
+                i++;
+            }
+        }
+        return ans;
+    }
+};
