@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int arr[1005] = {0};
+    vector<int> relativeSortArray(vector<int>& arr1, vector<int>& arr2) {
+        for(int i = 0; i < arr1.size(); i++){
+            arr[arr1[i]]++;
+        }
+        vector<int>v;
+        for(int i = 0; i < arr2.size(); i++){
+            int c = arr[arr2[i]];
+            arr[arr2[i]] = 0;
+            while(c--){
+                v.push_back(arr2[i]);
+            }
+        }
+        for(int i = 0; i <= 1000; i++){
+            if(arr[i]){
+                while(arr[i]){
+                    v.push_back(i);
+                    arr[i]--;
+                }
+            }
+        }
+        return v;
+    }
+};
