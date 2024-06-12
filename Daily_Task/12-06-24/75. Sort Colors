@@ -1,0 +1,14 @@
+class Solution {
+public:
+    int col[3] = {0};
+    void sortColors(vector<int>& nums) {
+        for(int i : nums) col[i]++;
+        for(int i = 0, j = 0; i <= 2; i++){
+            int c = col[i];
+            while(c--){
+                nums[j] = i;
+                j++;
+            }
+        }
+    }
+};
