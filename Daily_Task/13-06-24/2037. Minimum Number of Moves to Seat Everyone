@@ -1,0 +1,17 @@
+class Solution {
+public:
+    int minMovesToSeat(vector<int>& seats, vector<int>& students) {
+        int p = 0;
+        for(int i : seats) p = max(p, i);
+        for(int i : students) p = max(p, i);
+        vector<int>v(p + 1, 0);
+        for(int i : seats) v[i]++;
+        for(int i : students) v[i]--;
+        int ans = 0, unmatched = 0;
+        for(int i : v){
+            ans += abs(unmatched);
+            unmatched += i;
+        }
+        return ans;
+    }
+};
