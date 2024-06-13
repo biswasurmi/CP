@@ -1,0 +1,45 @@
+class Solution {
+public:
+    int n, k1;
+    int dp[5005][55][2];
+    map<int, set<int>> m;
+    int solve(int i, vector<int>& nums, int k, int st)
+    {
+        //cout << i << " " << k << " " << st << endl;
+        if(i >= n) return 0;
+        if(dp[i][k][st] != -1) return dp[i][k][st];
+        int ans = 0;
+        if(!st){
+            ans = max(ans, solve(i + 1, nums, k, 0));
+        }
+        
+        auto it = m[nums[i]].lower_bound(i + 1);
+        while(it != m[nums[i]].end()){
+            if(*it > i){
+                break;
+            }
+            it++;
+        }
+        if(it != m[nums[i]].end() && (*it > i)){
+            int c = *it;
+            if(!st) ans = max(ans, solve(c, nums, k, 1) + 1);
+            else ans = max(ans, solve(c, nums, k , 1) + 1);
+            if(k < k1) ans = max(ans, solve(i + 1, nums, k + 1, 0) + 1);
+            else if(k == k1) ans = max(ans, 1);
+        }
+        else{
+            if(k < k1) ans = max(ans, solve(i + 1, nums, k + 1, 0) + 1);
+            else if(k == k1 ) ans = max(ans, 1);        
+        }
+        return dp[i][k][st] = ans;
+    }
+    int maximumLength(vector<int>& nums, int k) {
+        n = nums.size();
+        k1 = k;
+        for(int i = 0; i < n; i++){
+            m[nums[i]].insert(i);
+        }
+        memset(dp, -1 , sizeof(dp));
+        return solve(0, nums, 0, 0);
+    }
+};
