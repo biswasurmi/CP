@@ -2,33 +2,36 @@ class Solution {
 public:
 
     int minIncrementForUnique(vector<int>& nums) {
-        int ma = 0;
+        int ma = 0, mi = 1000000;
         for(int i = 0; i < nums.size(); i++){
             ma= max(ma, nums[i]);
+            mi = min(mi, nums[i]);
         }
         ma *= 2;
         int n = nums.size();
         n *= 2;
         ma = max(ma, n);
-        set<int>s;
-        for(int i = 0; i <= ma; i++) s.insert(i);
-        for(int i1 = 0; i1 < nums.size(); i1++){
-            int i = nums[i1];
-            auto it = s.find(i);
-            if(it != s.end()){
-                s.erase(it);
-                nums[i1] = -1;
+        int arr[ma + 5], arr1[ma + 5];
+        for(int i = 0; i <= ma; i++) arr[i] = 0, arr1[i] = 0;
+        for(int i = 0; i < nums.size(); i++){
+            if(!arr[nums[i]]){
+                arr[nums[i]] = 1;
+                nums[i] = -1;
+            }
+            else{
+                arr1[nums[i]]++;
             }
         }
-        sort(nums.begin(), nums.end());
-        int ans = 0;
-        for(int i = 0; i < nums.size(); i++){
-            int c = nums[i];
-            if(c != -1){
-                auto ind = s.lower_bound(c);
-                
-                ans += (*ind) - c;
-                s.erase(ind);
+        int j = mi, ans = 0;
+        for(int i = mi; i <= ma; i++){
+            while(arr1[i]){
+                while(j < i){
+                    j++;
+                }
+                while(arr[j]) j++;
+                arr[j] = 1;
+                ans += (j - i);
+                arr1[i]--;
             }
         }
         return ans;
