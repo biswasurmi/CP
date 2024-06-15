@@ -1,0 +1,115 @@
+///131111129..........
+#include<bits/stdc++.h>
+#include<sstream>
+using namespace std;
+#define ll         long long int
+#define pi          acos(-1)
+#define pb          push_back
+#define mp          make_pair
+#define fi          first
+#define se          second
+#define nl          '\n'
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+#define orderedmultiset tree<ll, null_type,less<ll>, rb_tree_tag,tree_order_statistics_node_update>
+#define ordered_set tree<ll, null_type,less_equal<ll>, rb_tree_tag,tree_order_statistics_node_update>
+//Chess moves.........
+ int dx[] = {+0, +0, -1, +1}; ///Up-down, Left-Right//
+int dy[] = {+1, -1, +0, +0};
+///int dx[] = {+0,+0,+1,-1,-1,+1,-1,+1}; ///King's Move// int dy[] = {-1,+1,+0,+0,+1,+1,-1,-1}; int dx[] = {-2, -2, -1, -1,  1,  1,  2,  2}; ///Knight's Move// int dy[] = {-1,  1, -2,  2, -2,  2, -1,  1};
+//Constants........
+const ll mod = 1e9+7;
+const ll Max = 5e5+5;
+const ll inf = 1e18+5;
+ll fact[Max];
+ll gcd(ll a, ll b){ while (b){ a %= b; swap(a, b);} return a;}
+ll lcm(ll a, ll b){ return (a/gcd(a, b)*b);}
+ll bigmod(ll a,ll b, ll mod){b%=(mod-1);ll result=1ll;while(b>0ll){if(b&1ll) result=result*a%mod;a=a*a%mod;b>>=1ll;}return result;}
+int mul(int x, int y){return (x  * y) % mod;}
+int binpow(int x, int y){int z = 1;while(y){if(y & 1) z = mul(z, x);x = mul(x, x);y >>= 1;}return z;}
+int inv(int x){return binpow(x, mod - 2);}
+int ncr(int a,int b){if(a<0 || b<0)return 0;if(a<b)return 0;int ans=fact[a];ans=(ans*inv(fact[b]))%mod;ans=(ans*inv(fact[a-b]))%mod;return ans;}
+void fac(){fact[0]=fact[1]=1;for(ll i=2;i<Max;i++){fact[i]=(fact[i-1]*i)%mod;}}
+void urmi()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+}
+struct less_then_greater {
+    template<typename T, typename U>
+    bool operator()(T const& lhs, U const& rhs) const {
+        if (lhs.first < rhs.first) return true;
+        if (rhs.first < lhs.first) return false;
+        return lhs.second>rhs.second;
+    }
+};
+
+int main()
+{
+    urmi();
+    ll test=1;
+    cin>>test;
+    for(ll i1=1;i1<=test;i1++){
+        int n;
+        cin >> n;
+        int a[n], b[n];
+        for(int i = 0; i < n; i++) cin >> a[i];
+        for(int i = 0; i < n; i++) cin >> b[i];
+        vector<pair<int, pair<int, int>>>v, v1;
+        set<pair<int, int>>s, s1;
+        for(int i = 0; i < n; i++){
+            v.pb({a[i], {b[i], i}});
+            v1.pb({b[i], {a[i], i}});
+            s.insert({a[i], i});
+            s1.insert({b[i], i});
+        }
+        sort(v.rbegin(), v.rend());
+        sort(v1.rbegin(), v1.rend());
+        queue<pair<int, int>>q;
+        q.push({v1[0].se.se, 2});
+        s1.erase({v1[0].fi, v1[0].se.se});
+        q.push({v[0].se.se, 1});
+        s.erase({v[0].fi, v[0].se.se});
+        int ans[n] = {0};
+        ans[v1[0].se.se] = 1;
+        ans[v[0].se.se] = 1;
+        while(!q.empty()){
+            auto it = q.front();
+            int c = it.fi, d = it.se;
+            int e = a[c], f = b[c];
+            q.pop();
+            if(d == 1){
+                while(s1.size()){
+                    auto it1 = s1.end();
+                    it1--;
+                    if(it1->fi >= f){
+                        ans[it1->se] = 1;
+                        q.push({it1->se, 2});
+                        s1.erase(it1);
+                    }
+                    
+                    else{
+                        break;
+                    }
+                }
+            }
+            else{
+                while(s.size()){
+                    auto it1 = s.end();
+                    it1--;
+                    if(it1->fi >= e){
+                        ans[it1->se] = 1;
+                        q.push({it1->se, 1});
+                        s.erase(it1);
+                    }
+                    else{
+                        break;
+                    }
+                }
+            }
+        }
+        for(int i : ans) cout << i;cout << nl;
+    }
+}
