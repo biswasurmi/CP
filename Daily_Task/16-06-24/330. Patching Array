@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int minPatches(vector<int>& nums, int n) {
+        int ans = 0;
+        long long p = 1, q = 0;
+        for(int i = 0; i < nums.size(); i++){
+            if(p > n) break;
+            while(nums[i] > p && (p <= n)){
+                ans++;
+                long long temp = p;
+                p = (p + q + 1);
+                q += temp;
+            }
+            //cout << i << " " << p << " " << q << " " ;
+            p = nums[i] + q;
+            p++;
+            q += nums[i];
+            //cout << p << " "<< q << endl;
+        }
+        while(p <= n){
+            ans++;
+            long long temp = p;
+            p += q + 1;
+            q += temp;
+            //cout << p << " " << q << endl;
+        }
+        return ans;
+    }
+};
