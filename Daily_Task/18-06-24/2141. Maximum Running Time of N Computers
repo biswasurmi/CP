@@ -1,0 +1,45 @@
+class Solution {
+public:
+    long long maxRunTime(int n, vector<int>& batteries) {
+        sort(batteries.rbegin(), batteries.rend());
+        for(int i : batteries) cout << i << " "; cout << endl;
+        long long a[n], sum = 0, fa = 0;
+        for(int i = 0; i < n; i++){
+            a[i] = batteries[i];
+        }
+        fa = a[n - 1];
+        vector<int>p;
+        for(int i = n ; i < batteries.size(); i++){
+            p.push_back(batteries[i]);
+        }
+        if(!p.size()) return fa;
+        reverse(p.begin(), p.end());
+        int i = 0;
+        for(int j = n - 1, k = 1; j > 0; j--, k++){
+            int c = a[j - 1] - a[j];
+            int c1 = c;
+            c *= k;
+            while(c && i < p.size()){
+                if(p[i] >= c){
+                    p[i] -= c;
+                    c = 0;
+                }
+                else{
+                    c -= p[i];
+                    i++;
+                }
+            }
+           // cout << j << " " << a[j] << " " << a[j - 1] << " " << c1 * k << " " << c << " " << fa <<  endl;
+            if(!c) fa = a[j - 1];
+            else{
+                c = c1 * k - c;
+                c /= k;
+                fa += c;
+                break;
+            } 
+        }   
+        while(i < p.size()) sum += p[i], i++;
+        sum /= n;
+        return sum + fa;         
+    }
+};
