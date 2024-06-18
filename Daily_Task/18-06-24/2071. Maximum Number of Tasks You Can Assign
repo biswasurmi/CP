@@ -1,0 +1,52 @@
+class Solution {
+public:
+    bool check(vector<int>& tasks, vector<int> & workers, int pills, int strength, int ind)
+    {
+        multiset<int>s;
+        for(int i : workers){
+            s.insert(i);
+        }
+        int ans = 0;
+        sort(tasks.begin(), tasks.end());
+        for(int i = ind; i >= 0; i--){
+            int c = tasks[i];
+            auto it = s.lower_bound(c);
+            if(it != s.end()){
+                //cout << i << " "<< c << " " << *it << endl;
+                ans++;
+                s.erase(it);
+            }
+            else{
+                if(pills){
+                    auto it = s.lower_bound(c - strength);
+                    if(it != s.end()){
+                        //cout << "i " << i << " " << c-strength << " " << *it << endl;
+                        ans++;
+                        s.erase(it);
+                        pills--;
+                    }
+                    else return false;
+                } 
+                else return false;
+                
+            }
+        }
+        return true;
+    }
+    int maxTaskAssign(vector<int>& tasks, vector<int>& workers, int pills, int strength) {
+        sort(tasks.begin(), tasks.end());
+        sort(workers.begin(), workers.end());
+        int high = min(tasks.size(), workers.size()) - 1;
+        int low = 0, ans = -1;
+        while(low <= high)
+        {
+            int mid = (low + high) / 2;
+            if(check(tasks, workers, pills, strength, mid)){
+                ans = max(ans, mid);
+                low = mid + 1;
+            }
+            else high = mid - 1;
+        }
+        return ans + 1;
+    }
+};
