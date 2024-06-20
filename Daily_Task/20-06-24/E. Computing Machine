@@ -1,0 +1,98 @@
+///131111129..........
+#include<bits/stdc++.h>
+#include <sstream>
+using namespace std;
+#define ll          long long int
+#define pi          acos(-1)
+#define pb          push_back
+#define mp          make_pair
+#define fi          first
+#define se          second
+#define nl          '\n'
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+#define ordered_set tree<pair<int,int>, null_type,less<pair<int,int>>, rb_tree_tag,tree_order_statistics_node_update>
+///Chess moves.........
+// int dx[] = {+0, +0, -1, +1}; ///Up-down, Left-Right// int dy[] = {+1, -1, +0, +0};
+// int dx[] = {+0,+0,+1,-1,-1,+1,-1,+1}; ///King's Move// int dy[] = {-1,+1,+0,+0,+1,+1,-1,-1};
+// int dx[] = {-2, -2, -1, -1,  1,  1,  2,  2}; ///Knight's Move// int dy[] = {-1,  1, -2,  2, -2,  2, -1,  1};
+///Constants........
+const ll mod = 1e9+7;
+const ll Max = 1e5+5;
+const ll inf = 1e18+5;
+ll gcd(ll a, ll b){ while (b){ a %= b; swap(a, b);} return a;}
+ll lcm(ll a, ll b){ return (a/gcd(a, b)*b);}
+ll bigmod(ll a,ll b, ll mod){b%=(mod-1);ll result=1ll;while(b>0ll){if(b&1ll) result=result*a%mod;a=a*a%mod;b>>=1ll;}return result;}
+ll inverse(ll a, ll M){if(gcd(a, M)==1) return bigmod(a, M-2, M) % M;return 1;}
+ll ncr(ll a, ll b, ll mod){ ll x = max(a-b, b), ans=1; for(ll K=a, L=1; K>=x+1; K--, L++){ ans = ans * K % mod; ans = ans * inverse(L, mod) % mod;} return ans;}
+ll ncrwithk(ll n,ll k){if(k>n-k) k=n-k;ll p=1,pp=1;if(k!=0){while(k){p*=n;pp*=k;ll m=__gcd(p,pp);p/=m;pp/=m;n--;k--;}}else p=1;return p;}
+ll mul(ll a,ll b){ll ans=0ll;while(b){if(b&1) ans+=a;b>>=1;a+=a;if(a>inf) a=inf;if(ans>inf) ans=inf;}return ans;}
+void urmi()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+}
+
+int main()
+{
+    urmi();
+    int test=1;
+    cin >> test;
+    while(test--)
+    {
+        int n;
+        cin >> n;
+        string s, t;
+        cin >> s >> t;
+        int cnt[n + 1] = {0}, pre[n + 1] = {0}, suf[n + 1] = {0};
+        for(int i = 0; i < n; i++){
+            if(i - 1 >= 0 && i + 1 <n && t[i] == '0' && s[i - 1] == '0' && s[i + 1] == '0'){
+                t[i] = '1';
+                suf[i] = 1;
+            }
+        }
+        for(int i = 0; i < n; i++){
+            if(i - 1 >= 0 && i + 1 <n && s[i] == '0' && t[i - 1] == '1' && t[i + 1] == '1'){
+                s[i] = '1';
+                pre[i] = 1;
+            }
+        }
+        for(int i = 0; i < n; i++){
+            if(s[i] == '1') cnt[i] = 1;
+            if(i > 0) cnt[i] += cnt[i - 1];
+        }
+        int q;
+        cin >> q;
+        while(q--){
+            int l, r;
+            cin >> l >> r;
+            l--;r--;
+            int ans = 0;
+            if(l > 0) ans = cnt[r] - cnt[l - 1];
+            else ans = cnt[r];
+            if(pre[l]){
+                ans--;
+            }
+            if((l + 1 < r) && (pre[l + 1] == 1)){
+                if(suf[l]){
+                    ans--;
+                }
+                else{
+                    if(suf[l + 2] && l + 2 >= r){
+                        ans--;
+                    }
+                }
+            }
+            if(pre[r] && (l != r)){
+                ans--;
+            }
+            if((l + 1 < r - 1) && (pre[r - 1] == 1) && (suf[r] == 1)){
+                ans--;
+            }
+            cout << ans << nl;
+        }
+    }
+}
+ 
