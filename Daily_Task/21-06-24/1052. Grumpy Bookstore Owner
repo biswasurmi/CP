@@ -1,0 +1,27 @@
+class Solution {
+public:
+    int pre[20005], pre1[20005];
+    int maxSatisfied(vector<int>& customers, vector<int>& grumpy, int minutes) {
+        int n = customers.size();
+        for(int i = 0; i < n; i++){
+            if(grumpy[i] == 0){
+                pre[i + 1] = customers[i];
+            }
+            pre[i + 1] += pre[i];
+            pre1[i + 1] += customers[i] + pre1[i];
+        }
+        int ans = 0;
+        for(int i = 0; i < n; i++){
+            int j = i + 1;
+            int p = j + minutes - 1;
+            if(p > n) p = n;
+            int k = pre[j - 1] - pre[0];
+            if(p != n){
+                k += pre[n] - pre[p];
+            }
+            k += pre1[p] - pre1[j - 1];
+            ans = max(ans, k);
+        }
+        return ans;
+    }
+};
