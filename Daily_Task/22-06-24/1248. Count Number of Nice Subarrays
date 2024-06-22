@@ -1,0 +1,33 @@
+class Solution {
+public:
+    int pre[50005];
+    int numberOfSubarrays(vector<int>& nums, int k) {
+        int fa = 0;
+        vector<int>v;
+        for(int i = 0; i < nums.size(); i++){
+            if(nums[i] % 2){
+                v.push_back(i);
+            }
+        }
+        int i = 0, j = k - 1;
+        if(j >= v.size()) return 0;
+        while(j < v.size()){
+            int c = 0, d = 0;
+            if(i != 0){
+                c = v[i] - v[i - 1];
+            }
+            else c = v[i] + 1;
+            if(j == v.size() - 1){
+                d = nums.size() - v[j];
+            }
+            else{
+                d = v[j + 1] - v[j];
+            }
+            //cout << i << " " << j << " " << v[i] << " " << v[j] << " " << c << " " << d << endl;
+            fa += c * d;
+            i++;
+            j++;
+        }
+        return fa;
+    }
+};
