@@ -1,0 +1,127 @@
+///131111129..........
+#include<bits/stdc++.h>
+#include<sstream>
+using namespace std;
+#define ll         long long int
+#define pi          acos(-1)
+#define pb          push_back
+#define mp          make_pair
+#define fi          first
+#define se          second
+#define nl          '\n'
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+#define orderedmultiset tree<ll, null_type,less<ll>, rb_tree_tag,tree_order_statistics_node_update>
+#define ordered_set tree<ll, null_type,less_equal<ll>, rb_tree_tag,tree_order_statistics_node_update>
+//Chess moves.........
+ int dx[] = {+0, +0, -1, +1}; ///Up-down, Left-Right//
+int dy[] = {+1, -1, +0, +0};
+///int dx[] = {+0,+0,+1,-1,-1,+1,-1,+1}; ///King's Move// int dy[] = {-1,+1,+0,+0,+1,+1,-1,-1}; int dx[] = {-2, -2, -1, -1,  1,  1,  2,  2}; ///Knight's Move// int dy[] = {-1,  1, -2,  2, -2,  2, -1,  1};
+//Constants........
+const ll mod = 1e9 + 7;
+const ll Max = 1e6 + 5;
+const ll inf = 1e18+5;
+ll fact[Max];
+ll gcd(ll x,ll y){if(y==0)return x;gcd(y,x%y);}
+ll lcm(ll a, ll b){ return (a/gcd(a, b)*b);}
+ll bigmod(ll a,ll b, ll mod){b%=(mod-1);ll result=1ll;while(b>0ll){if(b&1ll) result=result*a%mod;a=a*a%mod;b>>=1ll;}return result;}
+int mul(int x, int y){return (x  * y) % mod;}
+int binpow(int x, int y){int z = 1;while(y){if(y & 1) z = mul(z, x);x = mul(x, x);y >>= 1;}return z;}
+int inv(int x){return binpow(x, mod - 2);}
+int ncr(int a,int b){if(a<0 || b<0)return 0;if(a<b)return 0;int ans=fact[a];ans=(ans*inv(fact[b]))%mod;ans=(ans*inv(fact[a-b]))%mod;return ans;}
+void fac(){fact[0]=fact[1]=1;for(ll i=2;i<Max;i++){fact[i]=(fact[i-1]*i)%mod;}}
+void urmi()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+}
+struct less_then_greater {
+    template<typename T, typename U>
+    bool operator()(T const& lhs, U const& rhs) const {
+        if (lhs.first < rhs.first) return true;
+        if (rhs.first < lhs.first) return false;
+        return lhs.second>rhs.second;
+    }
+};
+ll n, m, p;
+string a;
+struct node
+{
+    ll eve = 0, odd = 0, eql = 0;
+};
+node st[4 * Max];
+void build(ll si, ll ss, ll se)
+{
+    if(ss == se){
+        if(a[ss - 1] == '('){
+            st[si].eve = 1;
+        }
+        else{
+            st[si].odd = 1;
+        }
+        return;
+    }
+    ll mid = (ss + se) >> 1LL;
+    build(2 * si, ss, mid);
+    build(2 * si + 1, mid + 1, se);
+    if(st[2 * si].eve && st[2 * si + 1].odd){
+        ll p = min(st[2 * si].eve , st[2 * si + 1].odd);
+        st[si].eve = st[2 * si + 1].eve + st[2 * si].eve - p;
+        st[si].odd = st[2 * si].odd + st[2 * si + 1].odd - p;
+        st[si].eql = st[2 * si].eql + st[2 * si + 1].eql + p;
+    }
+    else{
+        st[si].eve = st[2 * si].eve + st[2 * si + 1].eve;
+        st[si].odd = st[2 * si].odd + st[2 * si + 1].odd;
+        st[si].eql = st[2 * si].eql + st[2 * si + 1].eql;
+    }
+}
+
+node query(ll si,ll ss,ll se,ll qs,ll qe)
+{
+    if(qs>se||qe<ss){
+        node p;
+        p.eve = p.odd = p.eql = 0;
+        return p;
+    }
+    if(qs <= ss && se<=qe){
+        return st[si];
+    }
+    ll mid=(ss+se)/2;
+    node p = query(2 * si, ss, mid, qs, qe);
+    node q = query(2 * si + 1, mid + 1, se, qs, qe);
+    node ans;
+    if(p.eve && q.odd){
+        ll c = min(p.eve, q.odd);
+        ans.eve = p.eve - c + q.eve;
+        ans.odd = p.odd + q.odd - c;
+        ans.eql = p.eql + q.eql + c;
+    }
+    else{
+        ans.eve = p.eve + q.eve;
+        ans.odd = p.odd + q.odd;
+        ans.eql = p.eql + q.eql;
+    }
+    return ans;
+}
+int main()
+{
+    urmi();
+    //fac();
+    ll test=1;
+    //cin>>test;
+    for(ll i1=1;i1<=test;i1++){
+        cin >> a;
+        build(1, 1, a.size());
+        int m;
+        cin >> m;
+        while(m--){
+            ll l, r;
+            cin >> l >> r;
+            node ans = query(1, 1, a.size(), l, r);
+            cout << ans.eql * 2 << nl;
+        }
+    }
+}
