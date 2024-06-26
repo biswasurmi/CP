@@ -1,0 +1,149 @@
+///131111129..........
+#include<bits/stdc++.h>
+#include<sstream>
+using namespace std;
+#define ll         long long int
+#define pi          acos(-1)
+#define pb          push_back
+#define mp          make_pair
+#define fi          first
+#define se          second
+#define nl          '\n'
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+#define orderedmultiset tree<ll, null_type,less<ll>, rb_tree_tag,tree_order_statistics_node_update>
+#define ordered_set tree<ll, null_type,less_equal<ll>, rb_tree_tag,tree_order_statistics_node_update>
+//Chess moves.........
+ int dx[] = {+0, +0, -1, +1}; ///Up-down, Left-Right//
+int dy[] = {+1, -1, +0, +0};
+///int dx[] = {+0,+0,+1,-1,-1,+1,-1,+1}; ///King's Move// int dy[] = {-1,+1,+0,+0,+1,+1,-1,-1}; int dx[] = {-2, -2, -1, -1,  1,  1,  2,  2}; ///Knight's Move// int dy[] = {-1,  1, -2,  2, -2,  2, -1,  1};
+//Constants........
+const ll mod = 1e9 + 7;
+const ll Max = 5e5 + 5;
+const ll inf = 1e18+5;
+ll fact[Max];
+ll gcd(ll a, ll b){ while (b){ a %= b; swap(a, b);} return a;}
+ll lcm(ll a, ll b){ return (a/gcd(a, b)*b);}
+ll bigmod(ll a,ll b, ll mod){b%=(mod-1);ll result=1ll;while(b>0ll){if(b&1ll) result=result*a%mod;a=a*a%mod;b>>=1ll;}return result;}
+int mul(int x, int y){return (x  * y) % mod;}
+int binpow(int x, int y){int z = 1;while(y){if(y & 1) z = mul(z, x);x = mul(x, x);y >>= 1;}return z;}
+int inv(int x){return binpow(x, mod - 2);}
+int ncr(int a,int b){if(a<0 || b<0)return 0;if(a<b)return 0;int ans=fact[a];ans=(ans*inv(fact[b]))%mod;ans=(ans*inv(fact[a-b]))%mod;return ans;}
+void fac(){fact[0]=fact[1]=1;for(ll i=2;i<Max;i++){fact[i]=(fact[i-1]*i)%mod;}}
+void urmi()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+}
+struct less_then_greater {
+    template<typename T, typename U>
+    bool operator()(T const& lhs, U const& rhs) const {
+        if (lhs.first < rhs.first) return true;
+        if (rhs.first < lhs.first) return false;
+        return lhs.second>rhs.second;
+    }
+};
+
+int main()
+{
+    urmi();
+    //fac();
+    ll test=1;
+    cin >> test;
+    for(ll i1 = 1; i1 <= test; i1++){
+        ll n, m, k, p = 0, q= 0;
+        cin >> n >> m >> k;
+        ll a[n][m], cnt[n][m], cnt1[n][m], cn[n][m], cn1[n][m];
+        char b[n][m];
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++) cin >> a[i][j], cn[i][j] = 0, cn1[i][j] = 0;
+        }
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                cin >> b[i][j];
+                if(b[i][j] == '0'){
+
+                    p += a[i][j];
+                }
+                else{
+                    q += a[i][j];
+                }
+
+            }
+        }
+        if(p == q){
+            cout << "YES" << nl;continue;
+        }
+        for(int j = 0; j < m; j++){
+            for(int i = 0; i < n; i++){
+                if(b[i][j] == '0'){
+                    cn[i][j] = 1;
+                }
+                else cn1[i][j] = 1;
+                if(i != 0){
+                    cn[i][j] += cn[i - 1][j];
+                    cn1[i][j] += cn1[i - 1][j];
+                }
+            }
+        }
+//        for(int i = 0; i < n; i++){
+//            for (int j = 0; j < m; j++){
+//                cout << cn[i][j] << " " ;
+//            }
+//            cout << nl;
+//        }
+//        for(int i = 0; i < n; i++){
+//            for (int j = 0; j < m; j++){
+//                cout << cn1[i][j] << " " ;
+//            }
+//            cout << nl;
+//        }
+        ll gc = -1;
+        for(int i = 0; i <= n - k; i++){
+            for(int j = k - 1,c = 0, d = 0, j2 = 0; j < m; j++){
+                if(j == k - 1){
+                    for(int j1 = 0; j1 < k; j1++){
+                        if(i == 0){
+                            c += cn[i + k - 1][j1];
+                            d += cn1[i + k - 1][j1];
+                        }
+                        else{
+                            c += cn[i + k - 1][j1] - cn[i - 1][j1];
+                            d += cn1[i + k - 1][j1] - cn1[i - 1][j1];
+                        }
+
+                    }
+                }
+                else{
+                    if(i == 0){
+                        //cout << cn[i + k - 1][j2] << " " << cn1[i + k - 1][j2] << nl;
+                        //cout << cn[i + k - 1][j] << " " <<
+                        c -= cn[i + k - 1][j2];
+                        d -= cn1[i + k - 1][j2];
+                        c += cn[i + k - 1][j];
+                        d += cn1[i + k - 1][j];
+                    }
+                    else{
+                        c -= cn[i + k - 1][j2] - cn[i - 1][j2];
+                        d -= cn1[i + k - 1][j2] - cn1[i - 1][j2];
+                        c += cn[i + k - 1][j] - cn[i - 1][j];
+                        d += cn1[i + k - 1][j] - cn1[i - 1][j];
+                    }
+                    j2++;
+                }
+                //cout << i << " " << j << " " << c << " " << d << nl;
+                if(gc == -1){
+                    gc = abs(c - d);
+                }
+                else{
+                    gc = gcd(gc, abs(c - d));
+                }
+            }
+        }
+        p = abs(p - q);
+        if(gc != 0 && p % gc == 0) cout << "YES" << nl;
+        else cout << "NO" << nl;
+    }
+}
