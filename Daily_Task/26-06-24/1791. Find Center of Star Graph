@@ -1,0 +1,18 @@
+class Solution {
+public:
+    int pre[100005] = {0};
+    int findCenter(vector<vector<int>>& edges) {
+        int ok = -1;
+        for(int i = 0; i < edges.size(); i++){
+            for(int j : edges[i]){
+                pre[j]++;
+                if(pre[j] > 1){
+                    ok = j;
+                    break;
+                }
+            }
+            if(ok != -1) break;
+        }
+        return ok;
+    }
+};
