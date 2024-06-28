@@ -1,3 +1,29 @@
+Python:
+class Solution(object):
+    def maximumImportance(self, n, roads):
+        """
+        :type n: int
+        :type roads: List[List[int]]
+        :rtype: int
+        """
+        road = [0] * 50005
+        cnt = [0] * 50005
+        ans = 0
+        for i in roads:
+            c, d = i
+            road[c] += 1
+            road[d] += 1
+        for i in range(n):
+            cnt[road[i]] += 1
+        for i in range(len(roads), -1, -1):
+            while cnt[i] > 0:
+                ans += i * n
+                n -= 1
+                cnt[i] -= 1
+        return ans
+        
+        
+C++:
 class Solution {
 public:
     int road[50005], cnt[50005];
