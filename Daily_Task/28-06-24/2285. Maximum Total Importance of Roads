@@ -1,0 +1,22 @@
+class Solution {
+public:
+    int road[50005], cnt[50005];
+    long long maximumImportance(int n, vector<vector<int>>& roads) {
+        long long ans = 0;
+        for(int i = 0; i < roads.size(); i++){
+            int c = roads[i][0], d = roads[i][1];
+            road[c]++;
+            road[d]++;
+        }
+        for(int i = 0; i < n; i++){
+            cnt[road[i]]++;
+        }
+        for(int i = roads.size(); i>= 0; i--){
+            while(cnt[i]--){
+                ans += (long long)i * (long long)n;
+                n--;
+            }
+        }
+        return ans;
+    }
+};
