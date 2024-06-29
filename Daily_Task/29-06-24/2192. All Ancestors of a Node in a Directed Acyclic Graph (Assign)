@@ -1,0 +1,40 @@
+class Solution {
+public:
+    vector<vector<int>> getAncestors(int n, vector<vector<int>>& edges) {
+        vector<vector<int>>v(n), fa(n);
+        vector<set<int>>ans(n);
+        int pre[n], vis[n];
+        for(int i = 0; i < n; i++) vis[i] = pre[i] = 0;
+        for(int i = 0; i < edges.size(); i++){
+            int c = edges[i][0], d = edges[i][1];
+            v[c].push_back(d);
+            pre[d]++;
+        }
+        queue<int>q;
+        for(int i = 0; i < n; i++){
+            if(pre[i] == 0){
+                q.push(i);
+                vis[i] = 1;
+            }
+        }
+        while(!q.empty()){
+            int c = q.front();
+            q.pop();
+            for(int i : v[c]){
+                pre[i]--;
+                if(ans[c].size() != 0){
+                    ans[i].insert(ans[c].begin(), ans[c].end());
+                }
+                ans[i].insert(c);
+                if(pre[i] == 0){
+                    vis[i] = 1;
+                    q.push(i);
+                }
+            }
+        }
+        for(int i = 0; i < n; i++){
+            fa[i].assign(ans[i].begin(), ans[i].end());
+        }
+        return fa;
+    }
+};
