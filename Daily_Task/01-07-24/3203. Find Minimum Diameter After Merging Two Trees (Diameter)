@@ -1,0 +1,90 @@
+class Solution {
+public:
+    int ma = 0, ma1 = 0;
+    int vis[100005] = {0};
+    void bfs(int n, int pa, int p, vector<vector<int>>&v)
+    {
+        queue<pair<int, int>>q;
+        q.push({n, 0});
+        ma1 = n;
+        vis[n] = 1;
+        while(!q.empty()){
+            auto u = q.front();
+            q.pop();
+            int c = u.first, d = u.second;
+            for(int i : v[c]){
+                if(!vis[i]){
+                    vis[i] = 1;
+                    q.push({i, d + 1});
+                    if(d + 1 > ma){
+                        ma = d + 1;
+                        ma1 = i;
+                    }
+                }
+            }
+        }
+    }
+    int minimumDiameterAfterMerge(vector<vector<int>>& edges1, vector<vector<int>>& edges2) {
+        // Find the number of nodes
+        int n1 = 0, n2 = 0;
+        for (const auto& edge : edges1) {
+            n1 = max(n1, max(edge[0], edge[1]));
+        }
+        for (const auto& edge : edges2) {
+            n2 = max(n2, max(edge[0], edge[1]));
+        }
+        int n = max(n1, n2) + 1;
+
+        // Resize vectors to accommodate all nodes
+        vector<vector<int>> v(n), v1(n);
+
+        for (const auto& edge : edges1) {
+            int c = edge[0], d = edge[1];
+            v[c].push_back(d);
+            v[d].push_back(c);
+        }
+        for (const auto& edge : edges2) {
+            int c = edge[0], d = edge[1];
+            v1[c].push_back(d);
+            v1[d].push_back(c);
+        }
+        ma = 0; ma1 = 0;
+        bfs(0, -1, 0, v);
+        cout << ma << " " << ma1 << endl;
+        ma = 0;
+        memset(vis, 0, sizeof(vis));
+        bfs(ma1, -1, 0, v);
+        cout << ma << " " << ma1 << endl;
+        int p = 0, q = 0;
+        if(ma % 2){
+            p = (ma / 2) + 1;
+        }
+        else p = ma / 2;
+        int p1 = ma - p;
+        ma = 0; ma1 = 0;
+        memset(vis, 0, sizeof(vis));
+        bfs(0, -1, 0, v1);
+        cout << ma << " " << ma1 << endl;
+        ma = 0;
+        memset(vis, 0, sizeof(vis));
+        bfs(ma1, -1, 0, v1);
+        cout << ma << " " << ma1 << endl;
+        if(ma % 2){
+            q = (ma / 2) + 1;
+        }
+        else q = ma / 2;
+        int q1 = ma - q;
+        if( p > q){
+            q++;
+            if(q <= p1) q = p1;
+            return p + q;
+        }
+        else{
+            p++;
+            if(p <= q1){
+                p = q1;
+            }
+            return p + q;
+        }
+    }
+};
