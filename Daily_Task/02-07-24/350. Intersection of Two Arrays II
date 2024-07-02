@@ -15,3 +15,20 @@ public:
         return ans;
     }
 };
+Python:
+class Solution(object):
+    def intersect(self, nums1, nums2):
+        """
+        :type nums1: List[int]
+        :type nums2: List[int]
+        :rtype: List[int]
+        """
+        pre = [0] * 1005
+        ans = []
+        for i in nums1:
+            pre[i] += 1
+        for i in nums2:
+            if pre[i]:
+                ans.append(i)
+                pre[i] -=1
+        return ans
