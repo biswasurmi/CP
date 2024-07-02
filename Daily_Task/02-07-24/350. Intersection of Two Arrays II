@@ -1,0 +1,17 @@
+class Solution {
+public:
+    int pre[1005];
+    vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
+        for(int i = 0; i < nums1.size(); i++){
+            pre[nums1[i]]++;
+        }
+        vector<int> ans;
+        for(int i = 0; i < nums2.size(); i++){
+            if(pre[nums2[i]]){
+                ans.push_back(nums2[i]);
+                pre[nums2[i]]--;
+            }
+        }
+        return ans;
+    }
+};
