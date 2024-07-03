@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int minDifference(vector<int>& nums) {
+        if(nums.size() <= 4) return 0;
+        sort(nums.begin(), nums.end());
+        int p = nums.size() - 4, ans = INT_MAX;
+        for(int i = 0; i <= nums.size(); i++){
+            if(i + p >= nums.size()) break;
+            ans = min(ans, nums[i + p] - nums[i]);
+        }
+        return ans;
+    }
+};
+class Solution(object):
+    def minDifference(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        if len(nums) <= 4:
+            return 0
+        nums.sort()
+        ans = float('inf')
+        p = len(nums) - 4
+        for i in range (0, len(nums), 1):
+            if i + p >= len(nums):
+                break
+            ans = min(ans, nums[i + p] - nums[i])
+        return ans
+        
