@@ -1,0 +1,60 @@
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        vector<int> prev(5, 0);
+        vector<int> cur(5, 0);
+        for(int ind = n - 1; ind >= 0; ind--){
+            for(int trans = 3; trans >= 0; trans--){
+                if(trans % 2){
+                    cur[trans] = max(prices[ind] + prev[trans + 1], prev[trans]);
+                }
+                else{
+                    cur[trans] = max( -prices[ind] + prev[trans + 1], prev[trans]);
+                }
+            }
+            prev = cur;
+        }
+        return prev[0];
+    }
+};
+
+
+class Solution {
+public:
+    int dp[100005][2][3];
+    int solve(int ind, int st, int rem, vector<int>& v)
+    {
+        if(rem == 0){
+            if(st == 1) return -100000000;
+            else return 0;
+        } 
+        if(ind >= v.size()){
+            if(st == 1) return -100000000;
+            else return 0;
+        } 
+        if(dp[ind][st][rem] != -1) return dp[ind][st][rem];
+        int ans = 0;
+        ans = max(ans, solve(ind + 1, st, rem, v));
+        if(rem == 0) ans = max(ans, solve(v.size(), st, rem, v));
+        if(st){
+            ans = max(ans, solve(ind + 1, 0, rem - 1, v) + v[ind]);
+        }
+        else{
+            ans = max(ans, solve(ind + 1, 1, rem, v) - v[ind]);
+        }
+        return dp[ind][st][rem] = ans;
+    }
+    int maxProfit(vector<int>& prices) {
+        for(int i = 0; i <= prices.size(); i++){
+            for(int j = 0; j < 2; j++){
+                for(int k = 0; k <3; k++){
+                    dp[i][j][k] = -1;
+                }
+            }
+        }
+        return solve(0, 0, 2, prices);
+    }
+};
+
+
