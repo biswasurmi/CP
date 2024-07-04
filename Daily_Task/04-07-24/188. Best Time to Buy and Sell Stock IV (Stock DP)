@@ -1,0 +1,20 @@
+class Solution {
+public:
+    int maxProfit(int k, vector<int>& prices) {
+        int n = prices.size();
+        vector<int> prev(2 *k + 5, 0);
+        vector<int> cur(2 *k + 5, 0);
+        for(int ind = n - 1; ind >= 0; ind--){
+            for(int trans = 2 * k - 1; trans >= 0; trans--){
+                if(trans % 2){
+                    cur[trans] = max(prices[ind] + prev[trans + 1], prev[trans]);
+                }
+                else{
+                    cur[trans] = max( -prices[ind] + prev[trans + 1], prev[trans]);
+                }
+            }
+            prev = cur;
+        }
+        return prev[0];
+    }
+};
