@@ -1,0 +1,20 @@
+class Solution {
+public:
+    int dp[5005][2];
+    
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        for(int ind = n - 1; ind >= 0; ind--){
+            for(int st = 0; st < 2; st++){
+                dp[ind][st] = max(dp[ind][st], dp[ind + 1][st]);
+                if(st){
+                    dp[ind][st] = max(dp[ind][st], dp[ind + 2][0] + prices[ind]);
+                }
+                else{
+                    dp[ind][st] = max(dp[ind][st], dp[ind + 1][1] - prices[ind]);
+                }
+            }
+        }
+        return dp[0][0];
+    }
+};
