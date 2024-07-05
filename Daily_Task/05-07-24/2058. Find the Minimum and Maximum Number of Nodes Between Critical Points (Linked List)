@@ -1,0 +1,98 @@
+# Definition for singly-linked list.
+class ListNode(object):
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution(object):
+    def nodesBetweenCriticalPoints(self, head):
+        """
+        :type head: Optional[ListNode]
+        :rtype: List[int]
+        """
+        a = -1
+        b = -1
+        d = float('inf')
+        
+        ptr = head
+        ptr1 = head.next
+        cnt = 2
+        
+        while ptr1.next is not None:
+            head = ptr1.next
+            if (ptr1.val > ptr.val and ptr1.val > head.val) or (ptr1.val < ptr.val and ptr1.val < head.val):
+                if a != -1:
+                    d = min(d, cnt - b)
+                    b = cnt
+                else:
+                    a = cnt
+                    b = cnt
+            
+            ptr = ptr1
+            ptr1 = head
+            cnt += 1
+        
+        if a == b:
+            return [-1, -1]
+        else:
+            return [d, b - a]
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> nodesBetweenCriticalPoints(ListNode* head) {
+        int a = -1, b = -1, c, d = 1000000;
+        ListNode* ptr = head;
+        ListNode* ptr1 = head;
+        head = head -> next;
+        ptr1 = head;
+        ptr1 = ptr1 -> next;
+        int cnt = 2;
+        while(head -> next != NULL){
+            if(head->val > ptr->val && head->val > ptr1->val){
+                if(a != -1){
+                    d = min(d, cnt - b);
+                    b = cnt;
+                }
+                else{
+                    a = cnt;
+                    b = cnt;
+                }
+            }
+            if(head->val < ptr->val && head->val < ptr1->val){
+                if(a != -1){
+                    d = min(d, cnt - b);
+                    b = cnt;
+                }
+                else{
+                    a = cnt;
+                    b = cnt;
+                }
+            }
+            ptr = ptr -> next;
+            head = head -> next;
+            ptr1 = ptr1 -> next;
+            cnt++;
+        }
+        vector<int>v1;
+        if(a == b){
+            v1.push_back(-1);
+            v1.push_back(-1);
+            return v1;
+        }
+        else{
+            v1.push_back(d);
+            v1.push_back(b - a);
+            return v1;
+        } 
+    }
+};
