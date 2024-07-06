@@ -1,0 +1,23 @@
+class Solution(object):
+    def passThePillow(self, n, time):
+        """
+        :type n: int
+        :type time: int
+        :rtype: int
+        """
+        j = n - 1
+        cnt = 0
+        if time < n :
+            return time + 1
+        time -= n
+        while time > 0:
+            if j == n or j == 1:
+                cnt += 1
+            if cnt % 2 == 0 :
+                j -= 1
+            else:
+                j += 1
+            time -= 1
+        return j
+ 
+        
