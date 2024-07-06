@@ -1,0 +1,69 @@
+class Solution {
+public:
+    vector<int>req;
+    int dp[305][405];
+    int mod = 1e9 + 7; 
+    int solve(int pos, int k, int n)
+    {
+        if(req[pos] != -1 && k != req[pos]) return 0;
+        if(pos >= n - 1) return 1;
+        if(dp[pos][k] != -1) return dp[pos][k];
+        int ans = 0;
+        for(int ch = 0; ch <= pos + 1; ch++){
+            int newinv = pos + 1 - ch;
+            if(newinv + k <= 400){
+                ans += solve(pos + 1, newinv + k, n) % mod;
+                if(ans <= 0) ans = (ans + mod) % mod;
+                else ans %= mod;
+            }
+        }
+        return dp[pos][k] = ans % mod;
+    }
+    int numberOfPermutations(int n, vector<vector<int>>& requirements) {
+        req.assign(n, -1);
+        for(auto it : requirements){
+            req[it[0]] = it[1];
+        }
+        memset(dp, -1, sizeof(dp));
+        return solve(0, 0, n);
+    }
+};
+
+
+class Solution(object):
+    def __init__(self):
+        self.req = []
+        self.dp = []
+        self.mod = 10**9 + 7
+    def solve(self, pos, k, n):
+        if self.req[pos] != -1 and k != self.req[pos]:
+            return 0
+        if pos >= n - 1:
+            return 1
+        if self.dp[pos][k] != -1:
+            return self.dp[pos][k]
+        ans = 0
+        for ch in range(0, pos + 2, 1):
+            newinv = pos + 1 - ch
+            if newinv + k <= 400:
+                ans += self.solve(pos + 1, newinv + k, n) % self.mod
+                if ans <= 0:
+                    ans = (ans + self.mod) % self.mod
+                else:
+                    ans %= self.mod
+        self.dp[pos][k] = ans % self.mod
+        return self.dp[pos][k]
+    
+    def numberOfPermutations(self, n, requirements):
+        """
+        :type n: int
+        :type requirements: List[List[int]]
+        :rtype: int
+        """
+        self.req = [-1] * n
+        for it in requirements:
+            self.req[it[0]] = it[1]
+        
+        self.dp = [[-1 for _ in range(405)] for _ in range(305)]
+        return self.solve(0, 0, n)
+        
