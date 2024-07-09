@@ -1,0 +1,17 @@
+class Solution(object):
+    def averageWaitingTime(self, customers):
+        """
+        :type customers: List[List[int]]
+        :rtype: float
+        """
+        p = 0
+        ans = 0.0
+        for i in customers:
+            if i[0] >= p:
+                p = i[0] + i[1]
+            else:
+                p += i[1]
+            ans += p - i[0]
+        ans /= (len(customers) * 1.0)
+        return ans
+        
