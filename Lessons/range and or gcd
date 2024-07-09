@@ -1,0 +1,38 @@
+///https://leetcode.com/problems/number-of-subarrays-with-and-value-of-k/
+
+
+#define ll long long
+#define Max 100005
+class Solution {
+public:
+    
+    long long countSubarrays(vector<int>& nums, int k) {
+        map<ll, ll>prev_ends, all_and_freq;
+        for(ll i = nums.size() - 1; i >= 0; i--){
+            map<ll, ll>new_ends;
+            for(auto v : prev_ends){
+                new_ends[v.first & nums[i]] = max(new_ends[v.first & nums[i]], v.second);
+            }
+            new_ends[nums[i]] = max(new_ends[nums[i]], i);
+            prev_ends = new_ends;
+            vector<pair<ll, ll>> ranges(new_ends.begin(), new_ends.end());
+            reverse(ranges.begin(), ranges.end());
+            cout << "starting at " << i << endl;
+            for(ll en = 0; en < ranges.size(); en++){
+                if(en == 0){
+                    cout << ranges[en].first << " " << ranges[en].second << endl;
+                    all_and_freq[ranges[en].first] += ranges[en].second - i + 1;
+                }
+                else{
+                    cout << ranges[en].first << " " << ranges[en].second << endl;
+                    all_and_freq[ranges[en].first] += ranges[en].second - ranges[en - 1].second;
+                }
+            }
+        }
+        cout << "Frequencies:" << endl;
+        for(auto v : all_and_freq){
+            cout << v.first << " " << v.second << endl;
+        }
+        return all_and_freq[k];
+    }
+};
