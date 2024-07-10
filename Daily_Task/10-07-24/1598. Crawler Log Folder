@@ -1,0 +1,21 @@
+class Solution(object):
+    def minOperations(self, logs):
+        """
+        :type logs: List[str]
+        :rtype: int
+        """
+        ans = 0
+        for i in logs:
+            s = i
+            n = len(s)
+            if (n >= 3 and s[n - 1] == '/' and s[n - 2] == '.' and s[n - 3] == '.'):
+                ans -= 1
+            elif (s[n - 1] == '/' and s[n - 2] == '.'):
+                ans += 0
+            
+            else:
+                ans += 1
+            ans = max(ans, 0)
+        
+        return ans;
+        
