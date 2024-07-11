@@ -1,0 +1,29 @@
+class Solution {
+public:
+    string reverseParentheses(string s) {
+        int n = s.size();
+        stack<int>st;
+        vector<int>pair(n);
+        for(int i = 0; i < n; i++){
+            if(s[i] == '('){
+                st.push(i);
+            }
+            else if(s[i] == ')'){
+                pair[i] = st.top();
+                pair[st.top()] = i;
+                st.pop();
+            }
+        }
+        string res;
+        for(int i = 0, direction = 1; i < n; i += direction){
+            if(s[i] == '(' || s[i] == ')'){
+                i = pair[i];
+                direction = -direction;
+            }
+            else{
+                res += s[i];
+            }
+        }
+        return res;
+    }
+};
