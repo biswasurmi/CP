@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int maxTotalReward(vector<int>& rewardValues) {
+        set<int>s;
+        const int n = 1e5;
+        for(int i : rewardValues) s.insert(i);
+        bitset<n>bs, mask;
+        int j = 0;
+        bs[0] = 1;
+        for(auto it : s){
+            while(j < it){
+                mask[j] = 1;
+                j++;
+            }
+            bs = (bs | (mask & bs) << it);
+        }
+        for(int i = n; i >= 0; i--){
+            if(bs[i]){
+                return i;
+            }
+        }
+        return 0;
+    }
+};
