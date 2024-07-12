@@ -1,0 +1,72 @@
+class Solution {
+public:
+    int maximumGain(string s, int x, int y) {
+        stack<char>st;
+        int ans = 0;
+        for(int i = 0; i < s.size(); i++){
+            if(st.size()){
+                if(x > y){
+                    if(s[i] == 'b' && st.top() == 'a'){
+                        ans += x;
+                        st.pop();
+                    }
+                    else{
+                        st.push(s[i]);
+                    }
+                }
+                else{
+                    if(s[i] == 'a' && st.top() == 'b'){
+                        ans += y;
+                        st.pop();
+                    }
+                    else{
+                        st.push(s[i]);
+                    }
+                }
+            }
+            else{
+                st.push(s[i]);
+            }
+        }
+        string s2;
+        while(!st.empty()){
+            s2 += st.top();
+            st.pop();
+        }
+        reverse(s2.begin(), s2.end());
+        for(int i = 0; i < s2.size(); i++){
+            if(st.size()){
+                if(x < y){
+                    if(s2[i] == 'b' && st.top() == 'a'){
+                        ans += x;
+                        st.pop();
+                    }
+                    else{
+                        st.push(s2[i]);
+                    }
+                }
+                else{
+                    if(s2[i] == 'a' && st.top() == 'b'){
+                        ans += y;
+                        st.pop();
+                    }
+                    else{
+                        st.push(s2[i]);
+                    }
+                }
+            }
+            else{
+                st.push(s2[i]);
+            }
+        }
+        while(st.size() >= 2){
+            char ch = st.top();
+            st.pop();
+            char ch1 = st.top();
+            if((ch == 'a' && ch == 'b')) ans += y;
+            else if((ch == 'b' && ch1 == 'a')) ans += x;
+            else break;
+        }
+        return ans;
+    }
+};
