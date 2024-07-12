@@ -1,0 +1,81 @@
+https://leetcode.com/problems/peaks-in-array/description/
+#define ll long long
+class Solution {
+public:
+    ll n;
+    ll a[100005];
+    ll st[500005];
+    void build(ll si,ll ss,ll se)
+    {
+        if(ss==se){
+            st[si] = 0;
+            return;
+        }
+        ll mid=(ss+se)/2ll;
+        build(2*si,ss,mid);
+        build(2*si+1,mid+1,se);
+        st[si]=st[2*si]+st[2*si+1];
+        if(mid - 1 >= ss && mid + 1 <= se && a[mid] > a[mid - 1] && a[mid] > a[mid + 1]){
+            st[si] ++;
+        }
+        if(mid >= ss && mid + 2 <= se && a[mid + 1] > a[mid] && a[mid + 1] > a[mid + 2]){
+            st[si]++;
+        }
+    }
+    ll query(ll si,ll ss,ll se,ll qs,ll qe)
+    {
+        if(qs>se||qe<ss) return 0;
+        if(ss>=qs && se<=qe) return st[si];
+        ll mid=(ss+se)/2;
+        ll ans = query(2*si,ss,mid,qs,qe)+query(2*si+1,mid+1,se,qs,qe);
+        if(mid - 1 >= ss && mid + 1 <= se && mid - 1 >= qs && mid + 1 <= qe && a[mid] > a[mid - 1] && a[mid] > a[mid + 1]){
+            ans++;
+        }
+        if(mid >= ss && mid + 2 <= se && mid >= qs && mid + 2 <= qe && a[mid + 1] > a[mid] && a[mid + 1] > a[mid + 2]){
+            ans++;
+        }
+        return ans;
+    }
+    void update(ll si, ll ss, ll se, ll ind, ll val)
+    {
+        if(ind < ss || ind > se) return;
+        if(ss == se){
+            st[si] = 0;
+            a[ss] = val;
+            return;
+        }
+        ll mid = (ss + se) / 2;
+        if(ind >= ss && ind <= mid){
+            update(2 * si, ss, mid, ind, val);
+        }
+        else{
+            update(2 * si + 1, mid + 1, se, ind, val);
+        }
+        st[si] = st[2 * si] + st[2 * si + 1];
+        if(mid - 1 >= ss && mid + 1 <= se && a[mid] > a[mid - 1] && a[mid] > a[mid + 1]){
+            st[si] ++;
+        }
+        if(mid >= ss && mid + 2 <= se && a[mid + 1] > a[mid] && a[mid + 1] > a[mid + 2]){
+            st[si]++;
+        }
+    }
+    vector<int> countOfPeaks(vector<int>& nums, vector<vector<int>>& queries) {
+        for(int i = 0; i < nums.size(); i++){
+            a[i + 1] = nums[i];
+        }
+        n = nums.size();
+        vector<int>ans;
+        build(1, 1, n);
+        for(int i = 0; i < queries.size(); i++){
+            int c = queries[i][0], d = queries[i][1], e = queries[i][2];
+            if(c == 2){
+                update(1, 1, n, d + 1, e);
+            }
+            else{
+                int p = query(1, 1, n, d + 1, e + 1);
+                ans.push_back(p);
+            }
+        }
+        return ans;
+    }
+};
