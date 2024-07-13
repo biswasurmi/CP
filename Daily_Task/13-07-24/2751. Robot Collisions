@@ -1,0 +1,56 @@
+class Solution {
+public:
+    vector<pair<pair<int, int>, pair<int, int>>>v;
+    vector<int> survivedRobotsHealths(vector<int>& positions, vector<int>& healths, string directions) {
+        stack<pair<int, int>>l, r;
+        for(int i = 0; i< positions.size(); i++){
+            int c = 0;
+            if(directions[i] == 'L') c = 1;
+            else c = 2;
+            v.push_back({{positions[i],i}, {healths[i], c}});
+        }
+        sort(v.rbegin(), v.rend());
+        int n = positions.size();
+        vector<int>ans(n + 1);
+        for(int i = 0; i < v.size(); i++){
+            int c = v[i].first.first, d = v[i].second.first, e = v[i].second.second, f1 = v[i].first.second;
+            if(e == 2){
+                while(l.size()){
+                    int f = l.top().first;
+                    if(f == d){
+                        d = 0;
+                        l.pop();
+                        break;
+                    }
+                    if(f < d){
+                        l.pop();
+                        d--;
+                    }
+                    else{
+                        d = 0;
+                        l.top().first--;
+                        break;
+                    }
+                }
+                //cout << "i " << i << " " << c << " " << d << " " << e << endl;
+                if(d){
+                    ans[f1] = d;
+                }
+            }
+            else{
+                l.push({d, f1});
+            }
+        }
+        while(l.size()){
+            auto it = l.top();
+            int c = it.first, d = it.second;
+            ans[d] = c;
+            l.pop();
+        }
+        vector<int>v;
+        for(int i = 0; i < n; i++){
+            if(ans[i]) v.push_back(ans[i]);
+        }
+        return v;
+    }
+};
