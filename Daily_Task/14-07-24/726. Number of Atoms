@@ -1,0 +1,94 @@
+class Solution {
+public:
+    string countOfAtoms(string formula) {
+    stack<string>st;
+    stack<int>st1;
+    for(int i = 0; i < formula.size();){
+        char ch = formula[i];
+        int j =i;
+        if(ch == '('){
+            st.push("(");
+            st1.push(0);
+            i++;
+        }
+        else if(ch == ')'){
+            int val = 0;
+            i++;
+            while(i < formula.size()){
+                if(formula[i] >= '0' && formula[i] <= '9'){
+                    val = (val * 10) + formula[i] - '0';
+                }
+                else break;
+                i++;
+            }
+            val = max(val, 1);
+            set<string>sp;
+            map<string, int>m;
+            while(!st.empty()){
+                string s1 = st.top();
+                if(s1 == "("){
+                    st.pop();
+                    st1.pop();
+                    break;
+                }
+                sp.insert(s1);
+                m[s1] += st1.top() * val;
+                //cout << "end " << s1 << " " << m[s1] << " " << val << endl;
+                st.pop();
+                st1.pop();
+            }
+            for(auto it : sp){
+                st.push(it);
+                st1.push(m[it]);
+            }
+        }
+        else{
+            set<string>sp;
+            map<string, int>m;
+            while(i < formula.size()){
+                char ch = formula[i];
+                if(ch == ')' || ch == '('){
+                    break;
+                }
+                string s3;
+                s3 += ch;
+                i++;
+                int val = 0;
+                while(i < formula.size() && (formula[i] >= 'a' && formula[i] <= 'z')){
+                    s3 += formula[i];
+                    i++;
+                }
+                while(i < formula.size() && (formula[i] >= '0' && formula[i] <= '9')){
+                    val = val * 10 + formula[i] - '0';
+                    i++;
+                }
+                sp.insert(s3);
+                val = max(val, 1);
+                m[s3] += val;
+            }
+            for(auto it : sp){
+                //cout << "Middle " << it << " " << m[it] << endl;
+                st.push(it);
+                st1.push(m[it]);
+            }
+
+        }
+    }
+    set<string>sp;
+    map<string, int>m;
+    while(!st.empty()){
+        string s1 = st.top();
+        sp.insert(s1);
+        m[s1] += st1.top();
+        //cout << s1 << " " << m[s1] << " final" << endl;
+        st.pop();
+        st1.pop();
+    }
+    string ans;
+    for(auto it : sp){
+        ans += it;
+        if(m[it] > 1) ans += to_string(m[it]);
+    }
+    return ans;
+}
+};
