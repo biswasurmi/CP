@@ -1,0 +1,25 @@
+class Solution {
+public:
+    long long minimumCost(int m, int n, vector<int>& horizontalCut, vector<int>& verticalCut) {
+        multiset<pair<int, int>>s;
+        int hor = 1, ver = 1;
+        for(int i : horizontalCut) s.insert({i, 0});
+        for(int i : verticalCut) s.insert({i, 1});
+        long long ans = 0;
+        while(s.size()){
+            auto it = s.end();
+            it--;
+            int c = it->first, d = it-> second;
+            if(d == 0){
+                ans += c * ver;
+                hor++;
+            }
+            else{
+                ans += c * hor;
+                ver++;
+            }
+            s.erase(it);
+        }
+        return ans;
+    }
+};
