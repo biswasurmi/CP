@@ -1,0 +1,52 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+ #define fi first
+ #define se second
+class Solution {
+public:
+    void dfs(TreeNode* &root,int c, int vis[], vector<vector<pair<int, int>>>&v){
+        vis[c] = 1;
+        for(auto i : v[c]){
+            if(!vis[i.fi]){
+                if(i.se == 0){
+                    root -> right = new TreeNode(i.fi);
+                    dfs(root -> right, i.fi, vis, v);
+                }
+                else{
+                    root -> left = new TreeNode(i.fi);
+                    dfs(root -> left, i.fi, vis, v);
+                }
+            }
+        }
+    }
+    TreeNode* createBinaryTree(vector<vector<int>>& descriptions) {
+        vector<vector<pair<int, int>>>v(100005);
+        int cnt[100005] = {0};
+        for(auto i : descriptions){
+            int c = i[0], d = i[1], e = i[2];
+            v[c].push_back({d, e});
+            cnt[d]++;
+        }
+        int c = 0;
+        for(auto i : descriptions){
+            if(cnt[i[0]] == 0){
+                c = i[0];
+                break;
+            }
+        }
+        TreeNode* root = new TreeNode(c);
+        int vis[100005] = {0};
+        dfs(root, c, vis, v);
+        return root;
+        
+    }
+};
