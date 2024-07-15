@@ -1,0 +1,100 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+const ll Max = 5e5 + 5;
+const double LIMIT = 1e9;
+#define nl endl
+vector<ll> adj[Max];
+ll vis[Max];
+ll euler[2 * Max];
+ll in[Max];
+ll out[Max];
+ll timer = 0;
+
+void eulerTree(ll u) {
+    vis[u] = 1;
+    in[u] = ++timer;
+    euler[timer] = u;
+    for (auto v : adj[u]) {
+        if (!vis[v]) {
+            eulerTree(v);
+        }
+    }
+    out[u] = timer;
+}
+
+void build(ll si, ll ss, ll se, vector<double>& st, vector<ll>& v1) {
+    if (ss == se) {
+        st[si] = 0;
+        return;
+    }
+    ll mid = (ss + se) / 2;
+    build(2 * si, ss, mid, st, v1);
+    build(2 * si + 1, mid + 1, se, st, v1);
+    st[si] = st[2 * si] + st[2 * si + 1];
+}
+
+double query(ll si, ll ss, ll se, ll qs, ll qe, vector<double>& st) {
+    if (qs > se || qe < ss) return 0; // Outside the range
+    if (ss >= qs && se <= qe) return st[si]; // Completely inside the range
+    ll mid = (ss + se) / 2;
+    return query(2 * si, ss, mid, qs, qe, st) + query(2 * si + 1, mid + 1, se, qs, qe, st); // Partially inside
+}
+
+void update(ll si, ll ss, ll se, ll ind, ll val, vector<double>& st) {
+    if (ind < ss || ind > se) return; // Outside the range
+    if (ss == se) { // Leaf node
+        st[si] = log10(val);
+        return;
+    }
+    ll mid = (ss + se) / 2;
+    update(2 * si, ss, mid, ind, val, st);
+    update(2 * si + 1, mid + 1, se, ind, val, st);
+    st[si] = st[2 * si] + st[2 * si + 1];
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+
+    ll n;
+    cin >> n;
+    for (ll i = 0; i < n - 1; i++) {
+        ll a, b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+
+    eulerTree(1);
+    vector<ll> v1(n + 1, 1); // Initialize all node values to 1
+    vector<double> st(4 * (n + 1), 0.0); // Segment Tree
+
+    build(1, 1, n, st, v1);
+
+    ll q;
+    cin >> q;
+
+    while (q--) {
+        ll type, x, y;
+        cin >> type >> x >> y;
+        if (type == 1) {
+            // Update node x with value y
+            update(1, 1, n, in[x], y * 1.0, st);
+        } else {
+            // Query the value of subtree x divided by subtree y
+            double productX = query(1, 1, n, in[x], out[x], st);
+            double productY = query(1, 1, n, in[y], out[y], st);
+            double ans = productX - productY;
+            if(ans >= 9.00000){
+                cout << 1000000000 << nl;
+            }
+            else{
+                cout << fixed << setprecision(10) << pow(10, ans) << nl;
+            }
+        }
+    }
+
+    return 0;
+}
