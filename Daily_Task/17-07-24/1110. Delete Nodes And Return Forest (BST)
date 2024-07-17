@@ -1,0 +1,78 @@
+
+ #define null NULL
+class Solution {
+public:
+
+    vector<TreeNode*> v;
+    int pre[1005];
+    void dfs(TreeNode* par, TreeNode* child, int lr)
+    {
+        if(par == NULL){
+            if(!pre[child -> val]){
+                TreeNode* root = child;
+                v.push_back(root);
+                if(child -> left != null){
+                    TreeNode* l = child -> left;
+                    dfs(child, l, 0);
+                }
+                if(child -> right != null){
+                    TreeNode* r = child -> right;
+                    dfs(child, r, 1);
+                }
+            }
+            else{
+                if(child -> left != null){
+                    TreeNode* l = child -> left;
+                    dfs(null, l, 0);
+                }
+                if(child -> right != null){
+                    TreeNode* r = child -> right;
+                    dfs(null, r, 1);
+                }
+            }
+        }
+        else{
+            if(!pre[child -> val]){
+                if(lr == 0){
+                    par -> left = child;
+                    if(child -> left != null){
+                        TreeNode* l = child -> left;
+                        dfs(child, l, 0);
+                    }
+                    if(child -> right != null){
+                        TreeNode* r = child -> right;
+                        dfs(child, r, 1);
+                    }
+                }
+                else{
+                    par -> right = child;
+                    if(child -> left != null){
+                        TreeNode* l = child -> left;
+                        dfs(child, l, 0);
+                    }
+                    if(child -> right != null){
+                        TreeNode* r = child -> right;
+                        dfs(child, r, 1);
+                    }
+                }
+            }
+            else{
+                if(lr == 0) par -> left =  (null);
+                else par -> right =  (null);
+                if(child -> left != null){
+                    TreeNode* l = child -> left;
+                    dfs(null, l, 0);
+                }
+                if(child -> right != null){
+                    TreeNode* r = child -> right;
+                    dfs(null, r, 0);
+                }
+            }
+        }
+    }
+    vector<TreeNode*> delNodes(TreeNode* root, vector<int>& to_delete) {
+        for(int i : to_delete) pre[i] = 1;
+        dfs(null, root, 0);
+        return v;
+    }
+};
