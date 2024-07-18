@@ -1,0 +1,39 @@
+class Solution {
+public:
+    int countPairs(TreeNode* root, int distance) {
+        int count = 0;
+        dfs(root, distance, count);
+        return count;
+    }
+
+    vector<int> dfs(TreeNode* node, int distance, int& count) {
+        if (!node) return {};
+
+        // If it's a leaf node, return a vector with one element (distance 1)
+        if (!node->left && !node->right) return {1};
+
+        // Get the distances of leaf nodes in left and right subtrees
+        vector<int> leftDistances = dfs(node->left, distance, count);
+        vector<int> rightDistances = dfs(node->right, distance, count);
+
+        // Count valid pairs
+        for (int l : leftDistances) {
+            for (int r : rightDistances) {
+                if (l + r <= distance) {
+                    count++;
+                }
+            }
+        }
+
+        // Collect current node's distances for its parent node
+        vector<int> currentDistances;
+        for (int l : leftDistances) {
+            if (l + 1 < distance) currentDistances.push_back(l + 1);
+        }
+        for (int r : rightDistances) {
+            if (r + 1 < distance) currentDistances.push_back(r + 1);
+        }
+
+        return currentDistances;
+    }
+};
