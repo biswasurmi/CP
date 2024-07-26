@@ -1,0 +1,127 @@
+#define ll long long
+class Solution {
+public:
+    struct node
+    {
+        ll level = 0, val = 0;
+    };
+    
+    vector<node> st;
+    vector<node> st1;
+    vector<node> temp;
+
+    void build(ll si, ll ss, ll se, vector<ll> &v)
+    {
+        if(ss == se){
+            st[si].val = v[ss];
+            st[si].level = ss;
+            return;
+        }
+        ll mid = (ss + se) >> 1LL;
+        build(2 * si, ss, mid, v);
+        build(2 * si + 1, mid + 1, se, v);
+        if(st[2 * si].val < st[2 * si + 1].val){
+            st[si].val = st[2 * si].val;
+            st[si].level = st[2 * si].level;
+        }
+        else{
+            st[si].val = st[2 * si + 1].val;
+            st[si].level = st[2 * si + 1].level;
+        }
+    }
+
+    node query(ll si, ll ss, ll se, ll qs, ll qe)
+    {
+        if(qs > se || qe < ss){
+            node temp;
+            temp.val = 1e9;
+            temp.level = 0;
+            return temp;
+        } 
+        if(ss >= qs && se <= qe) return st[si];
+        ll mid = (ss + se) / 2;
+        node temp1 = query(2 * si, ss, mid, qs, qe);
+        node temp2 = query(2 * si + 1, mid + 1, se, qs, qe);
+        node temp;
+        if(temp1.val < temp2.val){
+            temp.val = temp1.val;
+            temp.level = temp1.level;
+        }
+        else{
+            temp.val = temp2.val;
+            temp.level = temp2.level;
+        }
+        return temp;
+    }
+
+    long long minimumOperations(vector<int>& nums, vector<int>& target) {
+        ll ans = 0;
+        for(int i = 0; i < nums.size();){
+            if(nums[i] == target[i]){
+                i++;
+                continue;
+            }
+            vector<ll> v;
+            v.push_back(0);
+            while(i < nums.size() && nums[i] < target[i]){
+                v.push_back(target[i] - nums[i]);
+                i++;
+            }
+            if(v.size() > 1){
+                st.resize(4 * v.size());
+                build(1, 1, v.size() - 1, v);
+                set<pair<ll, pair<ll, ll>>> s;
+                s.insert({1, {v.size() - 1, 0}});
+                while(s.size()){
+                    auto it = s.begin();
+                    ll c = it->first, d = it->second.first, e = it->second.second;
+                    node p = query(1, 1, v.size() - 1, c, d);
+                    ans += p.val - e;
+                    s.erase(it);
+                    if(c != d){
+                        if(p.level == c){
+                            s.insert({c + 1, {d, e + (p.val - e)}});
+                        }
+                        else if(p.level == d){
+                            s.insert({c, {d - 1, e + (p.val - e)}});
+                        }
+                        else{
+                            s.insert({c, {p.level - 1, e + (p.val - e)}});
+                            s.insert({p.level + 1, {d, e + (p.val - e)}});
+                        }
+                    }
+                }
+            }
+            else{
+                while(i < nums.size() && nums[i] > target[i]){
+                    v.push_back(-target[i] + nums[i]);
+                    i++;
+                }
+                st.resize(4 * v.size());
+                build(1, 1, v.size() - 1, v);
+                set<pair<ll, pair<ll, ll>>> s;
+                s.insert({1, {v.size() - 1, 0}});
+                while(s.size()){
+                    auto it = s.begin();
+                    ll c = it->first, d = it->second.first, e = it->second.second;
+                    node p = query(1, 1, v.size() - 1, c, d);
+                    ans += p.val - e;
+                    s.erase(it);
+                    if(c != d){
+                        if(p.level == c){
+                            s.insert({c + 1, {d, e + (p.val - e)}});
+                        }
+                        else if(p.level == d){
+                            s.insert({c, {d - 1, e + (p.val - e)}});
+                        }
+                        else{
+                            s.insert({c, {p.level - 1, e + (p.val - e)}});
+                            s.insert({p.level + 1, {d, e + (p.val - e)}});
+                        }
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
