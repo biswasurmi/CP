@@ -1,0 +1,34 @@
+class Solution {
+public:
+    vector<int>v[40005];
+    int secondMinimum(int n, vector<vector<int>>& edges, int time, int change) {
+        for(auto i : edges){
+            int c = i[0], d = i[1];
+            v[c].push_back(d);
+            v[d].push_back(c);
+        }
+        queue<pair<int, int>>q;
+        q.push({1, 0});
+        vector<int>val(n + 1, INT_MAX), val1(n + 1, INT_MAX);
+        while(!q.empty()){
+            auto u = q.front();
+            q.pop();
+            for(auto i : v[u.first]){
+                int c = u.second;
+                int d = (c / change) + 1;
+                if(d % 2 == 0) d = d * change + time;
+                else d = c + time;
+                if(d < val[i]){
+                    swap(val[i], val1[i]);
+                    val[i] = d;
+                    q.push({i, val[i]});
+                }
+                else if(d > val[i] && d < val1[i]){
+                    val1[i] = d;
+                    q.push({i, val1[i]});
+                }
+            }
+        }
+        return val1[n];
+    }
+};
