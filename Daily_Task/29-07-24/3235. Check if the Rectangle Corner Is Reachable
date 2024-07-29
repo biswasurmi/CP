@@ -1,0 +1,77 @@
+#define ll long long
+class Solution {
+public:
+    vector<ll>v[1005];
+    ll vis[1005] = {0};
+    vector<ll>v1;
+    void dfs(ll ind)
+    {
+        v1.push_back(ind);
+        vis[ind] = 1;
+        for(ll i : v[ind]){
+            if(!vis[i]) dfs(i);
+        }
+    }
+    bool canReachCorner(int X, int Y, vector<vector<int>>& circles) {
+        for(int i = 0; i < circles.size(); i++){
+            for(int j = i + 1; j < circles.size(); j++){
+                ll x1 = circles[i][0], y1 = circles[i][1], r1 = circles[i][2];
+                ll x2 = circles[j][0], y2 = circles[j][1], r2 = circles[j][2];
+                ll d = ((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2));
+                if (d <= (r1 - r2) * (r1 - r2)) {
+                    v[i].push_back(j);
+                    v[j].push_back(i);
+                }
+                else if (d <= (r2 - r1) * (r2 - r1)) {
+                    v[i].push_back(j);
+                    v[j].push_back(i);
+                }
+                else if (d < (r1 + r2) * (r1 + r2)) {
+                    v[i].push_back(j);
+                    v[j].push_back(i);
+                }
+                else if (d == (r1 + r2) * (r1 + r2)) {
+                    v[i].push_back(j);
+                    v[j].push_back(i);
+                }
+            }
+        }
+        ll cnt = 0, ok = 0, ok1 = 0;
+        for(int i = 0; i < circles.size(); i++){
+            if(!vis[i]){
+                dfs(i);
+                cnt++;
+                ll ans1 = 0, ans2 = 0, ans3 = 0, ans4 = 0;
+                for(int i : v1){
+                    ll rad = circles[i][2];
+                    ll x = circles[i][0], y = circles[i][1];
+                    if(y - rad <= 0) ans4++;
+                    if(y + rad >= Y) ans2++;
+                    if(x + rad >= X) ans3++;
+                    if(x - rad <= 0) ans1++;
+                }
+                
+                if((ans1 && ans4) || (ans2 && ans3) || (ans1 && ans3) || (ans2 && ans4)){
+                    ok = 1;
+                }
+                v1.clear();
+            }
+        }
+        if(ok) return false;
+        if(cnt > 1) return true;
+        ll ans1 = 0, ans2 = 0, ans3 = 0, ans4 = 0;
+        for(int i = 0; i < circles.size(); i++){
+            ll rad = circles[i][2];
+            ll x = circles[i][0], y = circles[i][1];
+            if(y - rad <= 0) ans4++;
+            if(y + rad >= Y) ans2++;
+            if(x + rad >= X) ans3++;
+            if(x - rad <= 0) ans1++;
+            
+        }
+        if((!ans1 && !ans2) || (!ans3 && !ans4)){
+            return true;
+        }
+        else return false;
+    }
+};
