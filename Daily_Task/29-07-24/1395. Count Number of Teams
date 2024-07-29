@@ -1,0 +1,29 @@
+#include <ext/pb_ds/assoc_container.hpp> 
+#include <ext/pb_ds/tree_policy.hpp> 
+using namespace __gnu_pbds; 
+  
+#define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update> 
+class Solution {
+public:
+    int numTeams(vector<int>& rating) {
+        ordered_set s;
+        int pre[1005] = {0}, pre1[1005] = {0};
+        for(int i = rating.size() - 1; i >= 0; i--){
+            int c = s.order_of_key(rating[i]);
+            int d = s.size() - c;
+            pre[i] = c;
+            pre1[i] = d;
+            s.insert(rating[i]);
+        }
+        int ans = 0;
+        for(int i = 0; i < rating.size(); i++){
+            int i1 = rating[i];
+            for(int j = i + 1; j < rating.size(); j++){
+                int j1 = rating[j];
+                if(i1 > j1) ans += pre[j];
+                if(i1 < j1) ans += pre1[j];
+            }
+        }
+        return ans;
+    }
+};
