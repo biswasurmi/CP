@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int minimumDeletions(string s) {
+        int n = s.size(), aa = 0, bb = 0;
+        vector<int>a(n+ 5, 0), b(n + 5, 0);
+        for(int i = 0; i < n; i++){
+            if(s[i] == 'b') b[i + 1] += b[i] + 1, bb++;
+            else b[i + 1] += b[i];
+        }
+        for(int i = n - 1; i >= 0; i--){
+            if(s[i] == 'a') a[i + 1] += a[i + 2] + 1, aa++;
+            else a[i + 1] += a[i + 2];
+        }
+        int ans = 1e9;
+        for(int i = 0; i < n; i++){
+            if(s[i] == 'b'){
+                //cout << i << " " << b[i] << " " << a[i + 1] << endl;
+                ans = min(ans, b[i] + a[i + 1]);
+            }
+            
+        }
+        return min({ans, aa, bb});
+    }
+};
