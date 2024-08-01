@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int dp[1005];
+    int solve(int i, vector<vector<int>>& books, int &s, int &n)
+    {
+        if(i >= n) return 0;
+        if(dp[i] != -1) return dp[i];
+        int ans = 1e9;
+        for(int j = i, c = 0, d = 0; j < n; j++){
+            if(c + books[j][0] <= s){
+                c += books[j][0];
+                d = max(d, books[j][1]);
+                ans = min(ans, solve(j + 1, books, s, n) + d);
+            }
+            else break;
+        }
+        return dp[i] = ans;
+    }
+    int minHeightShelves(vector<vector<int>>& books, int shelfWidth) {
+        memset(dp, -1, sizeof(dp));
+        int n = books.size();
+        return solve(0, books, shelfWidth, n);
+    }
+};
