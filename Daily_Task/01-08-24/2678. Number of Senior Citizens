@@ -1,0 +1,13 @@
+class Solution {
+public:
+    int countSeniors(vector<string>& details) {
+        int cnt = 0;
+        for(auto i : details){
+            int c = i[11] - '0';
+            int d = i[12] - '0';
+            c = (c * 10) + d;
+            if(c > 60) cnt++;
+        }
+        return cnt;
+    }
+};
