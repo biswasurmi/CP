@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int pre[100005] = {0};
+    int minSwaps(vector<int>& nums) {
+        int ans = 1e9, cnt = 0;
+        for(int i = 0; i < nums.size(); i++){
+            if(nums[i] == 1) pre[i] = 1, cnt++;
+            if(i != 0) pre[i] += pre[i - 1];
+        }
+        for(int i = 0, j = cnt - 1; i < nums.size(); i++, j++){
+            if(j >= nums.size()) j = 0;
+            int c = pre[j];
+            if(j < i){
+                //cout << "1 " << pre[i] << " " << pre[i - 1] << " " << pre[j] << endl;
+                c += pre[nums.size() - 1] - pre[i - 1];
+            }
+            else{
+                
+                if(i != 0) c -= pre[i - 1];
+            }
+            //cout << i << " " << j << " " << c << " " << cnt - c << endl;
+            ans = min(ans, cnt - c);
+        }
+        return ans;
+    }
+};
