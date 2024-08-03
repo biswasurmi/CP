@@ -1,0 +1,12 @@
+class Solution {
+public:
+    int pre[1005], pre1[1005];
+    bool canBeEqual(vector<int>& target, vector<int>& arr) {
+        for(int i : target) pre[i]++;
+        for(int i : arr) pre1[i]++;
+        for(int i = 1; i <= 1000; i++){
+            if(pre[i] != pre1[i]) return false;
+        }
+        return true;
+    }
+};
