@@ -1,0 +1,73 @@
+class Solution {
+public:
+    int ma[100005][2];
+    vector<int>v[100005];
+    void dfs(int n, int pa, int val)
+    {
+        for(auto i : v[n]){
+            if(i == pa) continue;
+            if(i % 2){
+                ma[i][0] = val + 1;
+                dfs(i, n, val + 1);
+            }
+            else ma[i][0] = val + 2, dfs(i, n, val + 2);
+            if(ma[i][0] > ma[n][0]){
+                swap(ma[n][0], ma[n][1]);
+                ma[n][0] = ma[i][0];
+            }
+            else if(ma[i][0] > ma[n][1]){
+                ma[n][1] = ma[i][0];
+            }
+        }
+    }
+    void dfs1(int n, int pa, int val)
+    {
+        for(auto i : v[n]){
+            if(i == pa) continue;
+            int c = 0, d = 0, e = 0;
+            if(i % 2) c = val + 1, e = 1;
+            else c = val + 2, e = 2;
+            if(n % 2) d = 1;
+            else d = 2;
+            ma[i][0] -= c;
+            ma[i][1] -= c;
+            ma[i][0] = max(ma[i][0], 0);
+            ma[i][1] = max(ma[i][1] , 0);
+            if(ma[i][0] + e == ma[n][0]){
+                d += ma[n][1];
+                if(d > ma[i][0]){
+                    swap(ma[i][0], ma[i][1]);
+                    ma[i][0] = d;
+                }
+                else if(d > ma[i][1]){
+                    ma[i][1] = d;
+                }
+            }
+            else{
+                d += ma[n][0];
+                if(d > ma[i][0]){
+                    swap(ma[i][0], ma[i][1]);
+                    ma[i][0] = d;
+                }
+                else if(d > ma[i][1]){
+                    ma[i][1] = d;
+                }
+            }
+            dfs1(i, n, c);
+        }
+    }
+    vector<int> timeTaken(vector<vector<int>>& edges) {
+        for(auto i : edges){
+            int c = i[0], d = i[1];
+            v[c].push_back(d);
+            v[d].push_back(c);
+        }
+        dfs(0, -1, 0);
+        dfs1(0, -1, 0);
+        vector<int>ans;
+        for(int i= 0; i <= edges.size(); i++){
+            ans.push_back(ma[i][0]);
+        }
+        return ans;
+    }
+};
