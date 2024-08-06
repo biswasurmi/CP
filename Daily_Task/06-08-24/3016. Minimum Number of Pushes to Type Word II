@@ -1,0 +1,23 @@
+class Solution {
+public:
+    int minimumPushes(string word) {
+        int ans = 0;
+        int ch[30] = {0};
+        for(int i = 0; i < word.size(); i++){
+            char c = word[i] - 'a';
+            ch[c]++;
+        }
+        vector<pair<int, int>>v;
+        for(int i = 0; i < 26; i++){
+            if(ch[i] > 0) v.push_back({ch[i], i});
+        }
+        sort(v.rbegin(), v.rend());
+        for(int i = 0, j = 1, k = 1; i < v.size(); i++, k++){
+            if(k > 8){
+                k = 1; j++;
+            }
+            ans += v[i].first * j;
+        }
+        return ans;
+    }
+};
