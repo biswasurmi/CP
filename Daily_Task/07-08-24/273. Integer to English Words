@@ -1,0 +1,62 @@
+class Solution {
+public:
+    string numberToWords(int num) {
+        map<int, string>m;
+        m[0] = "Zero";
+        m[1] = "One";m[2] = "Two";m[3] = "Three"; m[4] = "Four";m[5] = "Five";m[6] = "Six";m[7] = "Seven";m[8] = "Eight";m[9] = "Nine";m[10] = "Ten";
+        m[11] = "Eleven";m[12] = "Twelve";m[13] = "Thirteen"; m[14] = "Fourteen";m[15] = "Fifteen";m[16] = "Sixteen";m[17] = "Seventeen";m[18] = "Eighteen";m[19] = "Nineteen";m[20] = "Twenty";
+        if(num <= 20) return m[num];
+        for(int i = 21, j = 1; i <= 99; i++, j++){
+            if(j > 10) j = 1;
+            string s;
+            if(i < 30) s = "Twenty";
+            else if(i >= 30 && i < 40) s = "Thirty";
+            else if(i >= 40 && i < 50) s = "Forty";
+            else if(i >= 50 && i < 60) s = "Fifty";
+            else if(i >= 60 && i < 70) s = "Sixty";
+            else if(i >= 70 && i < 80) s = "Seventy";
+            else if(i >= 80 && i < 90) s = "Eighty";
+            else if(i >=90 && i < 100) s =  "Ninety";
+            if(j != 10) s += " " + m[j];
+            m[i] = s;
+        }
+        for(int i = 1; i <= 9; i++){
+            string s = m[i] + " Hundred";
+            for(int j = 0; j <= 100; j++){
+                int c = (i * 100) + j;
+                if(c % 100 == 0) m[c] = s;
+                else m[c] = s + " " + m[j];
+            }
+        }
+        string s;
+        while(num > 0){
+            int c = num % 10;
+            num /= 10;
+            s += c + '0';
+        }
+        string ans;
+        for(int i = 0, j = 0; j < s.size(); i++){
+            string s1, s2, s3;
+            if(i == 1) s1 = "Thousand";
+            else if(i == 2) s1 = "Million";
+            else if(i == 3) s1 = "Billion";
+            for(int k = 1; k <= 3 && j < s.size(); k++, j++){
+                s2 += s[j];
+            }
+            reverse(s2.begin(), s2.end());
+            int c = 0, d = 0;
+            while(d < s2.size()){
+                c = (c * 10) + (s2[d] - '0');
+                d++;
+            }
+            if(c == 0) continue;
+            if(ans.size()) s3 = m[c] + " " + s1 + " " + ans;
+            else if( i != 0) s3 = m[c] + " " + s1;
+            else{
+                s3 = m[c];
+            }
+            ans = s3;
+        }
+        return ans;
+    }
+};
