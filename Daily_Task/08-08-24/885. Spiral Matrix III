@@ -1,0 +1,68 @@
+class Solution {
+public:
+    vector<vector<int>> spiralMatrixIII(int rows, int cols, int rStart, int cStart) {
+        int c = rows * cols - 1;
+        vector<vector<int>>ans;
+        vector<int>v;
+        v.push_back(rStart);
+        v.push_back(cStart);
+        ans.push_back(v);
+        int l = cStart, r = cStart, u = rStart, d = rStart, x = rStart, y = cStart;
+        while(c > 0){
+            vector<int>vv;
+            ///right...
+            r++;
+            while(y < r){
+                y++;
+                //cout << x << " right " <<y << endl;
+                if(x >= 0 && x < rows && y >= 0 && y < cols){
+                    vv.push_back(x);
+                    vv.push_back(y);
+                    ans.push_back(vv);
+                    c--;
+                    vv.clear();
+                }
+            }
+            ///Down...
+            d++;
+            while(x < d){
+                x++;
+                //cout << x << " down " <<y << endl;
+                if(x >= 0 && x < rows && y >= 0 && y < cols){
+                    vv.push_back(x);
+                    vv.push_back(y);
+                    ans.push_back(vv);
+                    c--;
+                    vv.clear();
+                }
+            }
+            ///Left...
+            l--;
+            while(y > l){
+                y--;
+                //cout << x << " left " <<y << endl;
+                if(x >= 0 && x < rows && y >= 0 && y < cols){
+                    vv.push_back(x);
+                    vv.push_back(y);
+                    ans.push_back(vv);
+                    vv.clear();
+                    c--;
+                }
+            }
+            ///up...
+            u--;
+            while(x > u){
+                x--;
+                //cout << x << " up " <<y << endl;
+                if(x >= 0 && x < rows && y >= 0 && y < cols){
+                    vv.push_back(x);
+                    vv.push_back(y);
+                    ans.push_back(vv);
+                    vv.clear();
+                    c--;
+                }
+            }
+        }
+        return ans;
+    }
+};
