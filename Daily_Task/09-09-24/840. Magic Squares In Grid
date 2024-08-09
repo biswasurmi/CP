@@ -1,0 +1,44 @@
+class Solution {
+public:
+    int numMagicSquaresInside(vector<vector<int>>& grid) {
+        int cnt = 0;
+        for(int i = 0, i1 = 2; i1 < grid.size();i++, i1++){
+            for(int j = 0, j1 = 2; j1 < grid[0].size(); j++, j1++){
+                set<int>s, ss;
+                for(int i2 = i; i2 <= i1;i2++){
+                    int s1 = 0;
+                    for(int j2 = j; j2 <= j1; j2++){
+                        s.insert(grid[i2][j2]);
+                        s1 += grid[i2][j2];
+                    }
+                    ss.insert(s1);
+                }
+                for(int j2 = j; j2 <= j1; j2++){
+                    int s1 = 0;
+                    for(int i2 = i; i2 <= i1;i2++){
+                        s1 += grid[i2][j2];
+                    }
+                    ss.insert(s1);
+                }
+                int s1 = 0;
+                for(int i2 = i, j2 = j; i2 <= i1 && j2 <= j1;i2++, j2++){
+                    s1 += grid[i2][j2];
+                }
+                ss.insert(s1);
+                s1 = 0;
+                for(int i2 = i, j2 = j1; i2 <= i1 && j2 >= j; i2++, j2--){
+                    s1 += grid[i2][j2];
+                }
+                ss.insert(s1);
+                for(int i1 = 1; i1 <= 9; i1++){
+                    if(s.find(i1) == s.end()){
+                        s.clear();
+                        break;
+                    }
+                }
+                if(s.size() == 9 && ss.size() == 1) cnt++;
+            }
+        }
+        return cnt;
+    }
+};
