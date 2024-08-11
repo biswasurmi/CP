@@ -1,0 +1,41 @@
+class Solution {
+public:
+    int mod = 1e9 + 7;
+    int dp[2005][1005];
+    int countOfPairs(vector<int>& nums) {
+        for(int i = 0; i <= nums[0]; i++){
+            dp[0][i] = 1;
+            if(i != 0) dp[0][i] += dp[0][i - 1];
+        }
+        for(int i = 1; i < nums.size(); i++){
+            int c = nums[i];
+            for(int j = 0; j <= c; j++){
+                int d = j;
+                int e = c - d;
+                d++;
+                e = (nums[i - 1] - e);
+                e++;
+                d = min(d, e);
+                d--;
+                
+                if(d < 0) continue;
+                //cout << i << " " << j << " " << c - j << " " << d << " " << dp[i - 1][d] << " ";
+                dp[i][j] = ((dp[i][j] % mod) + (dp[i - 1][d] % mod)) % mod ;
+                if(dp[i][j] <= 0){
+                    dp[i][j] = (dp[i][j] + mod) % mod;
+                }
+                //cout << dp[i][j] << endl;
+            }
+            for(int j = 1; j <= c; j++){
+                dp[i][j] = ((dp[i][j] % mod) + (dp[i][j - 1] % mod)) % mod ;
+                if(dp[i][j] <= 0){
+                    dp[i][j] = (dp[i][j] + mod) % mod;
+                }
+            }
+        }
+        int ans = 0;
+        int c = nums[nums.size() - 1];
+        ans = dp[nums.size() - 1][c];
+        return ans;
+    }
+};
