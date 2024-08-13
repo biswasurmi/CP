@@ -1,0 +1,24 @@
+class Solution:
+    def __init__(self):
+        self.ans = []
+
+    def solve(self, ind, current_sum, current_combination, target, candidates):
+        if current_sum == target:
+            self.ans.append(current_combination[:])  # Using slicing to copy the list
+            return
+        
+        for i in range(ind, len(candidates)):
+            if i != ind and candidates[i] == candidates[i - 1]:
+                continue
+            if current_sum + candidates[i] <= target:
+                current_combination.append(candidates[i])
+                self.solve(i + 1, current_sum + candidates[i], current_combination, target, candidates)
+                current_combination.pop()
+            else:
+                break
+
+    def combinationSum2(self, candidates, target):
+        self.ans = []
+        candidates.sort()
+        self.solve(0, 0, [], target, candidates)
+        return self.ans
