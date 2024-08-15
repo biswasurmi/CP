@@ -1,0 +1,31 @@
+class Solution {
+public:
+    int kthSmallest(vector<vector<int>>& matrix, int k) {
+        int n = matrix.size();
+        int m = matrix[0].size();
+
+        int ans;
+        set<pair<int, int>> vis;
+        priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>,
+                       greater<pair<int, pair<int, int>>>> pq;
+        pq.push({matrix[0][0], {0, 0}});
+        vis.insert({0, 0});
+        while(k-- && !pq.empty()){
+            auto top = pq.top();
+            pq.pop();
+            int i = top.second.first;
+            int j = top.second.second;
+
+            ans = matrix[i][j];
+            if(i + 1 < n && vis.find({i + 1, j}) == vis.end()){
+                pq.push({matrix[i + 1][j], {i + 1, j}});
+                vis.insert({i + 1, j});
+            }
+            if(j + 1 < m && vis.find({i, j + 1}) == vis.end()){
+                pq.push({matrix[i][j + 1], {i, j + 1}});
+                vis.insert({i, j + 1});
+            }
+        }
+        return ans;
+    }
+};
