@@ -1,0 +1,30 @@
+class Solution {
+public:
+    bool lemonadeChange(vector<int>& bills) {
+        int five = 0, ten = 0;
+        for(int i : bills){
+            if(i == 5) five++;
+            if(i == 10) ten++;
+            if(i == 5) continue;
+            else if(i == 10){
+                if(!five) return false;
+                five--;
+            }
+            else{
+                if(ten and five){
+                    ten--;
+                    five--;
+                }
+                else{
+                    if(five >= 3){
+                        five -= 3;
+                    }
+                    else{
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+};
