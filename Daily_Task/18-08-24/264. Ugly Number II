@@ -1,0 +1,20 @@
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        int c = 2000;
+        set<long long>s;
+        s.insert(1LL);
+        n--;
+        while(n--){
+            auto it = s.begin();
+            long long p = *it;
+            s.erase(it);
+            s.insert(p * 2LL);
+            s.insert(p * 3LL);
+            s.insert(p * 5LL);
+        }
+        auto it = s.begin();
+        c = (int)*it;
+        return c;
+    }
+};
