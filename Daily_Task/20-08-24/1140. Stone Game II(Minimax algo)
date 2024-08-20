@@ -1,0 +1,23 @@
+class Solution {
+public:
+    int dp[105][105];
+    int pre[105];
+    int solve(int ind, int m, vector<int>& a)
+    {
+        if(ind >= a.size()) return 0;
+        if(dp[ind][m] != -1) return dp[ind][m];
+        int ans = INT_MAX;
+        for(int i = 1; i <= 2 * m; i++){
+            ans = min(ans, solve(ind + i, max(m, i), a));
+        }
+        ans = pre[ind] - ans;
+        return dp[ind][m]= ans;
+    }
+    int stoneGameII(vector<int>& piles) {
+        for(int i = piles.size() - 1; i >= 0; i--){
+            pre[i] = piles[i] + pre[i + 1];
+        }
+        memset(dp, -1, sizeof(dp));
+        return solve(0, 1,piles);
+    }
+};
