@@ -1,0 +1,35 @@
+class Solution {
+public:
+    string rmdup(string &s)
+    {
+        string s1;
+        int i = 0;
+        while(i < s.size()){
+            s1 += s[i];
+            char ch = s[i];
+            while(i < s.size() && s[i] == ch){
+                i++;
+            }
+        }   
+        return s1;
+    }
+    int solve(int st, int en, string &s, vector<vector<int>>&dp)
+    {
+        if(st > en) return 0;
+        if(dp[st][en] != -1) return dp[st][en];
+        int fa = 1 + solve(st + 1, en, s, dp);
+        for(int i = st + 1; i <= en; i++){
+            if(s[i] == s[st]){
+                int ans = solve(st, i - 1, s, dp) + solve(i + 1, en, s, dp);
+                fa = min(fa, ans);
+            }
+        }
+        return dp[st][en] = fa;
+    }
+    int strangePrinter(string s) {
+        int n = s.size();
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        s = rmdup(s);
+        return solve(0, s.size() - 1, s, dp);
+    }
+};
