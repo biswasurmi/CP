@@ -1,1 +1,110 @@
-https://www.codechef.com/problems/JUSTTWO?tab=statement
+#include<bits/stdc++.h>
+#include<sstream>
+using namespace std;
+#define ll          long long int
+#define pi          acos(-1)
+#define pb          push_back
+#define mp          make_pair
+#define fi          first
+#define se          second
+#define nl          '\n'
+#define gcd(a,b)    __gcd(a,b)
+#define lcm(a,b)    (a*b)/gcd(a,b)
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+
+#define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update>
+
+//Chess moves.........
+ int dx[] = {+0, +0, -1, +1}; ///Up-down, Left-Right//
+int dy[] = {+1, -1, +0, +0};
+//Constants........
+const ll mod = 1e9 + 7;
+const ll Max = 2e5 + 5;
+const ll inf = 9223372036854775807;
+ll fact[Max];
+
+ll bigmod(ll a,ll b, ll mod){b%=(mod-1);ll result=1ll;while(b>0ll){if(b&1ll) result=result*a%mod;a=a*a%mod;b>>=1ll;}return result;}
+int mul(int x, int y){return (x  * y) % mod;}
+int binpow(int x, int y){int z = 1;while(y){if(y & 1) z = mul(z, x);x = mul(x, x);y >>= 1;}return z;}
+int inv(int x){return binpow(x, mod - 2);}
+int ncr(int a,int b){if(a<0 || b<0)return 0;if(a<b)return 0;int ans=fact[a];ans=(ans*inv(fact[b]))%mod;ans=(ans*inv(fact[a-b]))%mod;return ans;}
+void fac(){fact[0]=fact[1]=1;for(ll i=2;i<Max;i++){fact[i]=(fact[i-1]*i)%mod;}}
+void urmi()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+}
+struct less_then_greater {
+    template<typename T, typename U>
+    bool operator()(T const& lhs, U const& rhs) const {
+        if (lhs.first < rhs.first) return true;
+        if (rhs.first < lhs.first) return false;
+        return lhs.second>rhs.second;
+    }
+};
+
+int main()
+{
+    urmi();
+    //fac();
+    ll test=1;
+    cin >> test;
+    for(ll i1 = 1; i1 <= test; i1++){
+        ll n, k, ans = 0, p = 0;
+        cin >> n >> k;
+        ll a[n];
+        multiset<ll>s;
+        for(ll i = 0; i <n; i++){
+            cin >> a[i];
+            s.insert(a[i]);
+            for(ll j = 0; j <= 30; j++){
+                if(a[i] & (1LL << j)){
+                    p = max(p, j);
+                }
+            }
+        }
+        while(k){
+            if(!k) break;
+            auto it = s.begin();
+            ll c = *it;
+            if(c & (1LL << p)){
+                break;
+            }
+            else{
+                s.erase(it);
+                c *= 2LL;
+                s.insert(c);
+                k--;
+            }
+        }
+        //cout << "k " << k << nl;
+        if(k){
+            ll c = k / n;
+            ll d = k % n;
+            while(d--){
+                auto it = s.begin();
+                ll p = *it;
+                s.erase(it);
+                p *= 2LL;
+                s.insert(p);
+            }
+            k = c;
+        }
+        while(s.size()){
+            auto it = s.begin();
+            ll c = *it;
+            s.erase(it);
+            ll p = bigmod(2LL, k, mod);
+            p = ((p % mod) * (c % mod)) % mod;
+            if(p < 0) p = (p + mod) % mod;
+            ans = (ans + p) % mod;
+            if(ans < 0) ans = (ans + mod) % mod;
+
+        }
+        cout << ans << nl;
+    }
+}
+
