@@ -1,0 +1,80 @@
+class Solution {
+public:
+    int gcd(int a, int b)
+    {
+        if(b == 0) return a;
+        return gcd(b, a % b);
+    }
+    int lcm (int a, int b)
+    {
+        return (a / gcd(a, b)) * b;
+    }
+    string fractionAddition(string expression) {
+        int gc = 1, lc = 1;
+        string s = expression;
+        int n = s.size();
+        for(int i = 1; i < n; i++){
+            if(s[i] == '/'){
+                int d = s[i + 1] - '0';
+                if(i + 2 < n && s[i + 2] != '-' && s[i + 2] != '+'){
+                    int e = s[i + 2] - '0';
+                    d = d * 10 + e;
+                }
+                lc = lcm(lc, d);
+            }
+        }
+        int sum = 0;
+        for(int i = 0; i < n; i++){
+            if(s[i] == '/'){
+                int c = s[i - 1] - '0';
+                int d = s[i + 1] - '0';
+                int e = 0;
+                if(i - 2 >= 0 && s[i - 2] != '-' && s[i - 2] != '+'){
+                    e = s[i - 2] - '0';
+                    c = e * 10 + c;
+                    if(i - 3 >= 0 && s[i - 3] == '-'){
+                        c *= -1;
+                    }
+                }
+                else{
+                    if(i - 2 >= 0 && s[i - 2] == '-'){
+                        c *= -1;
+                    }
+                }
+                if(i + 2 < n && s[i + 2] != '-' && s[i + 2] != '+'){
+                    e = s[i + 2] - '0';
+                    d = d * 10 + e;
+                }
+                d = lc / d ;
+                c *= d;
+                sum += c;
+            }
+        }
+        int p = sum;
+        if(p < 0) p *= -1;
+        gc = gcd(lc, p);
+        sum /= gc;
+        lc /= gc;
+        string ans;
+        if(sum < 0) ans += '-', sum = -sum;
+        string s1;
+        while(sum > 0){
+            int p = sum % 10;
+            s1 += p + '0';
+            sum /= 10;
+        }
+        if(s1.size() == 0) s1 += '0';
+        reverse(s1.begin(), s1.end());
+        ans += s1;
+        ans += '/';
+        s1.clear();
+        while(lc > 0){
+            int p = lc % 10;
+            s1 += p + '0';
+            lc /= 10;
+        }
+        reverse(s1.begin(), s1.end());
+        ans += s1;
+        return ans;
+    }
+};
