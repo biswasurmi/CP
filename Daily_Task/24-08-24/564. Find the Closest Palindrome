@@ -1,0 +1,55 @@
+#define ll long long
+class Solution {
+public:
+    // Function to find the largest palindrome of length `len - 1`
+    ll getLargestPalindrome(int len) {
+        return pow(10LL, len - 1) - 1;
+    }
+
+    // Function to find the smallest palindrome of length `len + 1`
+    ll getSmallestPalindrome(int len) {
+        return pow(10LL, len) + 1;
+    }
+
+    string nearestPalindromic(string n) {
+        int intLength = n.size();
+        ll p = stoll(n);  // Original number
+        ll closest = -1;  // Variable to store the closest palindrome
+        
+        // Binary Search to find the closest palindrome using the middle part
+        int halfLen = (intLength + 1) / 2;
+        ll start = stoll(n.substr(0, halfLen));  // Convert the first half to a number
+
+        set<ll> candidates;
+
+        // Generate the nearest palindromes by modifying the first half
+        for (int i = -1; i <= 1; i++) {
+            ll newHalf = start + i;
+            string halfStr = to_string(newHalf);
+            string palindrome = halfStr;
+            if (intLength % 2 != 0) {
+                halfStr.pop_back();  // If the length is odd, remove the middle character for mirroring
+            }
+            reverse(halfStr.begin(), halfStr.end());
+            palindrome += halfStr;  // Form the full palindrome
+            candidates.insert(stoll(palindrome));  // Add the palindrome to the candidate set
+        }
+
+        // Add the edge cases
+        candidates.insert(getLargestPalindrome(intLength));  // Largest palindrome with one digit less
+        candidates.insert(getSmallestPalindrome(intLength));  // Smallest palindrome with one digit more
+
+        // Find the closest palindrome
+        for (ll candidate : candidates) {
+            if (candidate != p) {
+                if (closest == -1 || 
+                    abs(candidate - p) < abs(closest - p) ||
+                    (abs(candidate - p) == abs(closest - p) && candidate < closest)) {
+                    closest = candidate;
+                }
+            }
+        }
+
+        return to_string(closest);
+    }
+};
