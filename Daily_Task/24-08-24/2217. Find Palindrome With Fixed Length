@@ -1,0 +1,28 @@
+class Solution {
+public:
+    vector<long long> kthPalindrome(vector<int>& queries, int intLength) {
+        vector<long long> ans;
+        int halfLen = (intLength + 1) / 2;  // Half length of the palindrome (if odd length, include the middle digit)
+        long long start = pow(10LL, halfLen - 1);  // Smallest number that can form the first half
+        long long end = pow(10LL, halfLen) - 1;  // Largest number that can form the first half
+
+        for(int i = 0; i < queries.size(); i++) {
+            long long k = queries[i] - 1;  // Convert 1-based index to 0-based
+            if (start + k > end) {
+                ans.push_back(-1);  // If the k-th palindrome does not exist
+                continue;
+            }
+            
+            string half = to_string(start + k);  // Generate the k-th half palindrome
+            string palindrome = half;
+            if (intLength % 2) {
+                half.pop_back();  // If the length is odd, remove the middle character for mirroring
+            }
+            reverse(half.begin(), half.end());  // Mirror the half string
+            palindrome += half;  // Form the full palindrome
+            
+            ans.push_back(stoll(palindrome));  // Convert to long long and add to the result
+        }
+        return ans;
+    }
+};
