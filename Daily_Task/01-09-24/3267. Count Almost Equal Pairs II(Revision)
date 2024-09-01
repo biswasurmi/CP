@@ -1,0 +1,61 @@
+///https://leetcode.com/problems/count-almost-equal-pairs-ii/
+class Solution {
+public:
+    
+    vector<string> generateSwappedNumbers(string numstr) {
+        vector<string> swappedNumbers;
+        int n = numstr.size();
+        swappedNumbers.push_back(numstr); 
+        
+        if (n == 1) {
+            return swappedNumbers;
+        }
+        
+      
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                swap(numstr[i], numstr[j]);
+                swappedNumbers.push_back(numstr);
+                
+                
+                for (int k = 0; k < n; k++) {
+                    for (int l = k + 1; l < n; l++) {
+                        swap(numstr[k], numstr[l]);
+                        swappedNumbers.push_back(numstr);
+                        swap(numstr[k], numstr[l]);
+                    }
+                }
+                
+                swap(numstr[i], numstr[j]); 
+            }
+        }
+        
+        return swappedNumbers;
+    }
+
+    int countPairs(vector<int>& nums) {
+        int n = nums.size();
+        int count = 0;
+        unordered_map<int, int> seen;
+        sort(nums.begin(), nums.end());
+        for (int i = 0; i < n; i++) {
+            string numstr = to_string(nums[i]);
+            vector<string> swappedNumbers = generateSwappedNumbers(numstr);
+            
+            
+            unordered_map<int, bool> checked; 
+            for (const string& s : swappedNumbers) {
+                int swappedNum = stoi(s);
+                if (seen.count(swappedNum) && !checked[swappedNum]) {
+                    count += seen[swappedNum];
+                    checked[swappedNum] = true;  
+                }
+            }
+            
+           
+            seen[stoi(numstr)]++;
+        }
+
+        return count;
+    }
+};
