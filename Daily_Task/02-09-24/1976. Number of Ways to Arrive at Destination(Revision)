@@ -1,0 +1,41 @@
+///https://leetcode.com/problems/number-of-ways-to-arrive-at-destination/
+
+#define ll long long
+#define pi pair<ll, ll>
+const ll mod = 1e9+7;
+class Solution {
+public:
+    vector<pair<ll, ll>>v[205];
+    ll vis[205];
+    int countPaths(int n, vector<vector<int>>& roads) {
+        map<pair<ll, ll>, ll> m;
+        for(auto i : roads){
+            v[i[0]].push_back({i[1], i[2]});
+            v[i[1]].push_back({i[0], i[2]});
+        }
+        priority_queue<pi, vector<pi>, greater<pi> > pq;
+        vector<ll>dist(n, 2e15);
+        pq.push({0, 0});
+        m[{0, 0}] = 1;
+        dist[0] = 0;
+        while(!pq.empty()){
+            auto i = pq.top();
+            pq.pop();
+            ll c = i.first, d = i.second;
+            //cout << "c " << c << " " << d << " " << vis[d] << endl;
+            if(vis[d]) continue;
+            vis[d] = 1;
+            for(auto it : v[d]){
+                if(vis[it.first]) continue;
+                if(dist[it.first] >= it.second + c){
+                    //cout << it.first << " " << it.second << " " << m[{it.first, it.second + c}] << " " <<
+                    //m[{d, c}] << endl;
+                    m[{it.first, it.second + c}] += m[{d, c}] % mod;
+                    dist[it.first] = it.second + c;
+                    pq.push({it.second + c , it.first});
+                }
+            }
+        }
+        return m[{n - 1, dist[n - 1]}] % mod;
+    }
+};
