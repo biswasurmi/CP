@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int uniqueLetterString(string s) {
+        int ans = 0;
+        vector<vector<int>>v(26);
+        for(int i = 0; i < s.size(); i++){
+            v[s[i] - 'A'].push_back(i);
+        }
+        int m[26] = {0};
+        for(int i = 0; i < s.size(); i++){
+            int c = s[i] - 'A';
+            int d = m[c], e = 0;
+            if(m[c] != 0){
+                d = (v[c][m[c]] + 1) - (v[c][m[c] - 1] + 1);
+            }
+            else d = v[c][m[c]] + 1;
+            if(m[c] + 1 >= v[c].size()){
+                e = s.size() - i;
+            }
+            else{
+                e = v[c][m[c] + 1] - i;
+            }
+            ans += d * e;
+            m[c]++;
+        }
+        return ans;
+    }
+};
