@@ -1,0 +1,84 @@
+///https://leetcode.com/problems/lexicographically-smallest-beautiful-string/description/
+
+class Solution {
+public:
+    string smallestBeautifulString(string s, int k) {
+        string ans1;
+        k--;
+        for(int i = s.size() - 1; i >= 0; i--){
+            int d = s[i] - 'a';
+            for(int j = 1; j <= 4; j++){
+                int p = d + j;
+                if(p > k) break;
+                bool ok = false;
+                if(i - 1 >= 0 and s[i - 1] - 'a' == p) ok = true;
+                if(i - 2 >= 0 and s[i - 2] - 'a' == p) ok = true;
+                if(!ok){
+                    s[i] = p + 'a';
+                    ans1 = s;
+                    if(i - 1 >= 0){
+                        if(s[i - 1] == 'a'){
+                            if(s[i] == 'b'){
+                                for(int j = i + 1, l = 0; j < s.size(); j++, l++){
+                                    if(l % 3 == 0) s[j] = 'c';
+                                    else if (l % 3 == 1) s[j] = 'a';
+                                    else s[j] = 'b';
+                                }
+                            }
+                            else{
+                                for(int j = i + 1, l = 0; j < s.size(); j++, l++){
+                                    if(l % 3 == 0) s[j] = 'b';
+                                    else if (l % 3 == 1) s[j] = 'a';
+                                    else s[j] = 'c';
+                                }
+                            }
+                        }
+                        else if(s[i - 1] == 'b'){
+                            for(int j = i + 1, l = 0; j < s.size(); j++, l++){
+                                if(l % 3 == 0) s[j] = 'a';
+                                else if (l % 3 == 1) s[j] = 'b';
+                                else s[j] = 'c';
+                            }
+                        }
+                        else{
+                            if(s[i] == 'b'){
+                                for(int j = i + 1, l = 0; j < s.size(); j++, l++){
+                                    if(l % 3 == 0) s[j] = 'a';
+                                    else if (l % 3 == 1) s[j] = 'c';
+                                    else s[j] = 'b';
+                                }
+                            }
+                            else{
+                                for(int j = i + 1, l = 0; j < s.size(); j++, l++){
+                                    if(l % 3 == 0) s[j] = 'a';
+                                    else if (l % 3 == 1) s[j] = 'b';
+                                    else s[j] = 'c';
+                                }
+                            }
+                        }
+                    }
+                    else{
+                        if(s[i] == 'b'){
+                            for(int j = i + 1, l = 0; j < s.size(); j++, l++){
+                                if(l % 3 == 0) s[j] = 'a';
+                                else if (l % 3 == 1) s[j] = 'c';
+                                else s[j] = 'b';
+                            }
+                        }
+                        else{
+                            for(int j = i + 1, l = 0; j < s.size(); j++, l++){
+                                if(l % 3 == 0) s[j] = 'a';
+                                else if (l % 3 == 1) s[j] = 'b';
+                                else s[j] = 'c';
+                            }
+                        }
+                    }
+                    ans1 = s;
+                    break;
+                }
+            }
+            if(ans1.size()) break;
+        }
+        return ans1;
+    }
+};
