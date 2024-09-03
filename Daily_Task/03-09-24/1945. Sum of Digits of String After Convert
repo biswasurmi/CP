@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int getLucky(string s, int k) {
+        int sum = 0;
+        for(char i : s){
+            int c = (i - 'a') + 1;
+            while(c != 0){
+                sum += c % 10;
+                c /= 10;
+            }
+        }
+        k--;
+        while(k){
+            int p = sum;
+            int q = 0;
+            while(p != 0){
+                q += p % 10;
+                p /= 10;
+            }
+            swap(sum, q);
+            k--;
+        }
+        return sum;
+    }
+};
