@@ -1,0 +1,93 @@
+///https://codeforces.com/contest/1426/problem/E
+
+#include<bits/stdc++.h>
+#include<sstream>
+using namespace std;
+#define ll          long long int
+#define pi          acos(-1)
+#define pb          push_back
+#define mp          make_pair
+#define fi          first
+#define se          second
+#define nl          '\n'
+#define gcd(a,b)    __gcd(a,b)
+#define lcm(a,b)    (a*b)/gcd(a,b)
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+
+#define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update>
+
+//Chess moves.........
+ int dx[] = {+0, +0, -1, +1}; ///Up-down, Left-Right//
+int dy[] = {+1, -1, +0, +0};
+//Constants........
+const ll mod = 1e9 + 7;
+const ll Max = 2e5 + 5;
+const ll inf = 9223372036854775807;
+ll fact[Max];
+
+ll bigmod(ll a,ll b, ll mod){b%=(mod-1);ll result=1ll;while(b>0ll){if(b&1ll) result=result*a%mod;a=a*a%mod;b>>=1ll;}return result;}
+int mul(int x, int y){return (x  * y) % mod;}
+int binpow(int x, int y){int z = 1;while(y){if(y & 1) z = mul(z, x);x = mul(x, x);y >>= 1;}return z;}
+int inv(int x){return binpow(x, mod - 2);}
+int ncr(int a,int b){if(a<0 || b<0)return 0;if(a<b)return 0;int ans=fact[a];ans=(ans*inv(fact[b]))%mod;ans=(ans*inv(fact[a-b]))%mod;return ans;}
+void fac(){fact[0]=fact[1]=1;for(ll i=2;i<Max;i++){fact[i]=(fact[i-1]*i)%mod;}}
+void urmi()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+}
+struct less_then_greater {
+    template<typename T, typename U>
+    bool operator()(T const& lhs, U const& rhs) const {
+        if (lhs.first < rhs.first) return true;
+        if (rhs.first < lhs.first) return false;
+        return lhs.second>rhs.second;
+    }
+};
+
+int main()
+{
+    urmi();
+    //fac();
+    ll test=1;
+    //cin >> test;
+    for(ll i1 = 1; i1 <= test; i1++){
+        ll n;
+        cin >> n;
+        ll a[3],b[3],aa[3],bb[3];
+        for(ll i = 0; i < 3; i++) cin >> a[i];
+        for(ll i = 0; i < 3; i++) cin >> b[i];
+
+        ll mx = min(a[0],b[1]) + min(a[1],b[2]) + min(a[2],b[0]);
+        ll mn = n;
+        vector<vector<ll>> v;
+        v.pb({0,0});
+        v.pb({1,1});
+        v.pb({2,2});
+        v.pb({0,2});
+        v.pb({1,0});
+        v.pb({2,1});
+        vector<ll> p;
+        for(ll i = 0; i < 6; i++) p.pb(i);
+
+        do {
+            for(ll i = 0; i < 3; i++) {
+                aa[i] = a[i];
+                bb[i] = b[i];
+            }
+            ll res = 0;
+            for(ll i : p) {
+                ll a_ind = v[i][0],b_ind = v[i][1];
+                ll mnn = min(aa[a_ind],bb[b_ind]);
+                res += mnn;
+                aa[a_ind] -= mnn;
+                bb[b_ind] -= mnn;
+            }
+            mn = min(mn,n-res);
+        } while(next_permutation(p.begin(),p.end()));
+        cout << mn << ' ' << mx << nl;
+    }
+}
