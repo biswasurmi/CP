@@ -1,0 +1,46 @@
+class Solution {
+public:
+    map<pair<int, int>, int>m;
+    int robotSim(vector<int>& commands, vector<vector<int>>& obstacles) {
+        for(auto i : obstacles){
+            m[{i[0], i[1]}]++;
+        }
+        int x = 0, y = 0, ans = 0;
+        string dir = "north";
+        for(int i : commands){
+            if(i == -1){
+                if(dir == "north") dir = "east";
+                else if(dir == "south") dir = "west";
+                else if(dir == "east") dir = "south";
+                else dir = "north";
+            }
+            else if(i == -2){
+                if(dir == "south") dir = "east";
+                else if(dir == "north") dir = "west";
+                else if(dir == "west") dir = "south";
+                else dir = "north";
+            }
+            else{
+                int x1 = x, y1 = y;
+                for(int j = 1; j <= i; j++){
+                    
+                    if(dir == "north"){
+                        y1++;
+                    }
+                    else if(dir == "east") x1++;
+                    else if(dir == "south") y1--;
+                    else x1--;
+                    //cout << x << " " << y << " " << x1 << " " << y1 << endl;
+                    if(m[{x1, y1}]){
+                        break;
+                    }
+                    else{
+                        x = x1; y = y1;
+                        ans = max(ans, (x * x) + (y * y));
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
