@@ -1,0 +1,25 @@
+class Solution {
+public:
+    vector<int> missingRolls(vector<int>& rolls, int mean, int n) {
+        int p = mean * (n + rolls.size());
+        int sum = 0;
+        for(int i : rolls) sum += i;
+        p -= sum;
+        int q = p / n;
+        int q1 = p % n;
+        vector<int>ans;
+        if(q > 6 || q < 1) return ans;
+        for(int i = 0; i < n; i ++){
+            if(q1){
+                if(q + 1 > 6 || q + 1 < 1){
+                    ans.clear();
+                    return ans;
+                }
+                ans.push_back(q + 1);
+                q1 --;
+            }
+            else ans.push_back(q);
+        }
+        return ans;
+    }
+};
