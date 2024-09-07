@@ -1,0 +1,39 @@
+https://leetcode.com/problems/linked-list-in-binary-tree/?envType=daily-question&envId=2024-09-07
+
+class Solution {
+public:
+    bool isSubPath(ListNode* head, TreeNode* root) {
+        if (!root) return false; // Base case for empty tree
+        
+        queue<pair<ListNode*, TreeNode*>> q;
+        q.push({head, root});
+        
+        while (!q.empty()) {
+            auto [listNode, treeNode] = q.front();
+            q.pop();
+            
+            if (!listNode) {
+                // If we've reached the end of the linked list, return true
+                return true;
+            }
+            if (!treeNode) {
+                // If the tree node is null, continue to the next iteration
+                continue;
+            }
+
+            // If the current values match, continue the search in both left and right subtrees
+            if (listNode->val == treeNode->val) {
+                q.push({listNode->next, treeNode->left});
+                q.push({listNode->next, treeNode->right});
+            }
+            
+            // Only restart from the head if we are at a valid tree node and haven't found a match
+            if (listNode == head) {
+                q.push({head, treeNode->left});
+                q.push({head, treeNode->right});
+            }
+        }
+        
+        return false; // No match found
+    }
+};
