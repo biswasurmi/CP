@@ -1,0 +1,20 @@
+class Solution {
+public:
+    int countConsistentStrings(string allowed, vector<string>& words) {
+        int ar[26] = {0};
+        for(auto i : allowed){
+            ar[i - 'a']++;
+        }
+        int cnt = 0;
+        for(auto i : words){
+            bool ok = true;
+            for(auto j : i){
+                if(!ar[j - 'a']){
+                    ok = false;break;
+                }
+            }
+            if(ok) cnt++;
+        }
+        return cnt;
+    }
+};
