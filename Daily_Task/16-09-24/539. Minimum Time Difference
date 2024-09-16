@@ -1,0 +1,61 @@
+class Solution {
+public:
+    int findMinDifference(vector<string>& timePoints) {
+        sort(timePoints.begin(), timePoints.end());
+        int ans = 1e9;
+        string s, s1;
+        for(int i = 1; i <= timePoints.size(); i++){
+            if(i == timePoints.size()){
+                s = timePoints[i - 1];
+                s1 = timePoints[0];
+            }
+            else{
+                s = timePoints[i];
+                s1 = timePoints[i - 1];
+            }
+            if(s == s1){
+                ans = 0;
+                break;
+            }
+            //cout << s << " " << s1 << endl;
+            int h1 = (s[0] - '0') * 10 + s[1] - '0';
+            int h2 = (s1[0] - '0') * 10 + s1[1] - '0';
+            int m1 = (s[3] - '0') * 10 + s[4] - '0'; 
+            int m2 = (s1[3] - '0') * 10 + s1[4] - '0';
+            //cout <<s << " " << s1 << " " << h1 << " " << h2 << " " << m1 << " " << m2 << endl;
+            if(h1 == h2){
+                if(m1 == m2){
+                    ans = 0;
+                    break;
+                }
+                else{
+                    ans = min(ans, abs(m1 - m2));
+                }
+                continue;
+            }
+            int c = 60 - m2;
+            int d = h2 + 1;
+            if(d >= 24) d = 0;
+            if(h1 < d){
+                c += (24 - d) * 60;
+                c += h1 * 60;
+            }
+            else c += (h1 - d) * 60;
+            c += m1;
+            //cout << c << " " ;
+            ans = min(ans, c);
+            c = 60 - m1;
+            h1++;
+            if(h1 == 24) h1 = 0;
+            if(h2 < h1){
+                c += (24 - h1) * 60;
+                c += h2 * 60;
+            }
+            else c += (h2 - h1) * 60;
+            c += m2;
+            //cout << c << endl;
+            ans = min(ans, c);
+        }
+        return ans;
+    }
+};
