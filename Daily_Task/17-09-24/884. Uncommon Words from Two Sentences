@@ -1,0 +1,47 @@
+class Solution {
+public:
+    vector<string> uncommonFromSentences(string s1, string s2) {
+        set<string>s;
+        map<string, int>m, m1;
+        vector<string>v;
+        for(int i = 0; i < s1.size(); ){
+            int j = i;
+            if(s1[i] == ' '){
+                i++;
+                continue;
+            }
+            string ss;
+            while(j < s1.size() and s1[j] != ' '){
+                ss += s1[j];
+                j++;
+            }
+            s.insert(ss);
+            m[ss]++;
+            i = j;
+        }
+        for(int i = 0; i < s2.size(); ){
+            int j = i;
+            if(s2[i] == ' '){
+                i++;
+                continue;
+            }
+            string ss;
+            while(j < s2.size() and s2[j] != ' '){
+                ss += s2[j];
+                j++;
+            }
+            s.insert(ss);
+            m1[ss]++;
+            i = j;
+        }
+        for(auto it : s){
+            if(m[it] == 1 and m1[it] == 0){
+                v.push_back(it);
+            }
+            else if(m[it] == 0 and m1[it] == 1){
+                v.push_back(it);
+            }
+        }
+        return v;
+    }
+};
