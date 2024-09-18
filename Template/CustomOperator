@@ -1,0 +1,21 @@
+https://leetcode.com/problems/largest-number/?envType=daily-question&envId=2024-09-18
+
+class Solution {
+public:
+    struct CustomComparator {
+        bool operator()(const string& lhs, const string& rhs) const {
+            return lhs + rhs > rhs + lhs; 
+        }
+    };
+    string largestNumber(vector<int>& nums) {
+        vector<string>v;
+        string ans;
+        for(auto i : nums){
+            string s = to_string(i);
+            v.push_back(s);
+        }
+        sort(v.begin(), v.end(), CustomComparator());
+        for(auto i : v) ans += i;
+        return ans;
+    }
+};
