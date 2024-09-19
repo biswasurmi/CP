@@ -1,0 +1,39 @@
+https://leetcode.com/problems/different-ways-to-add-parentheses/description/?envType=daily-question&envId=2024-09-19
+class Solution {
+public:
+    vector<int> func(string &s, vector<vector<vector<int>>>& memo, int start, int end)
+    {
+        if(!memo[start][end].empty()) return memo[start][end];
+        vector<int>res;
+        if(start == end){
+            res.push_back(s[start] - '0');
+            return res;
+        }
+        if(end - start == 1 and isdigit(s[start])){
+            int tens = s[start] - '0';
+            int one = s[end] - '0';
+            res.push_back(10 * tens + one);
+            return res;
+        }
+        for(int i = start; i <= end; i++){
+            if(isdigit(s[i])){
+                continue;
+            }
+            vector<int>left = func(s, memo, start, i - 1);
+            vector<int>right = func(s, memo, i + 1, end);
+            for(int l : left){
+                for(int r : right){
+                    if(s[i] == '+') res.push_back(l + r);
+                    else if(s[i] == '-') res.push_back(l - r);
+                    else res.push_back(l * r);
+                }
+            }
+        }
+        memo[start][end] = res;
+        return res;
+    }
+    vector<int> diffWaysToCompute(string expression) {
+        vector<vector<vector<int>>> memo(expression.length(), vector<vector<int>>(expression.length()));
+        return func(expression, memo, 0, expression.length() - 1);
+    }
+};
