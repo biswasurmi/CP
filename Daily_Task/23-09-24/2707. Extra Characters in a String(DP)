@@ -1,0 +1,38 @@
+https://leetcode.com/problems/extra-characters-in-a-string/description/?envType=daily-question&envId=2024-09-24
+class Solution {
+public:
+    map<pair<int, int>, string>m1;
+    map<string, int>m;
+    int dp[55];
+    int func(int i, string &s)
+    {
+        if(i >= s.size()){
+            return 0;
+        }
+        if(dp[i] != -1) return dp[i];
+        int ans = 1e9;
+        for(int ind = i;ind < s.size(); ind++){
+            if(m[m1[{i,ind}]]){
+                ans = min(ans, func(ind + 1, s));
+            }
+            else{
+                ans = min(ans, func(ind + 1, s) + (ind - i + 1));
+            }
+        }
+        return dp[i] = ans;
+    }
+    int minExtraChar(string s, vector<string>& dictionary) {
+        for(auto i : dictionary){
+            m[i]++;
+        }
+        memset(dp, -1, sizeof(dp));
+        for(int i = 0; i < s.size(); i++){
+            string s1;
+            for(int j = i; j < s.size();j++){
+                s1 += s[j];
+                m1[{i, j}] = s1;
+            }
+        }
+        return func(0, s);
+    }
+};
