@@ -1,81 +1,50 @@
 https://leetcode.com/problems/sum-of-prefix-scores-of-strings/?envType=daily-question&envId=2024-09-25
+struct TrieNode {
+    TrieNode* next[26] = {};
+    int cnt = 0;
+};
+
 class Solution {
+    // Initialize the root node of the trie.
+    TrieNode root;
+
 public:
-    struct Node {
-        std::unordered_map<char, Node*> link;  
-        int count = 0;  
-
-        bool containsKey(char ch) {
-            return link.find(ch) != link.end();
-        }
-
-        void put(char ch, Node* node) {
-            link[ch] = node;
-        }
-
-        Node* get(char ch) {
-            return link[ch];
-        }
-
-        void increaseCount() {
-            count++;
-        }
-
-        int getCount() {
-            return count;
-        }
-    };
-
-    class Trie {
-    private:
-        Node* root;
-
-    public:
-        Trie() {
-            root = new Node();
-        }
-
-        // Insert a string into the Trie and update character counts
-        void insert(const std::string& word) {
-            Node* node = root;
-            for (char ch : word) {
-                if (!node->containsKey(ch)) {
-                    node->put(ch, new Node());
-                }
-                node = node->get(ch);
-                node->increaseCount();  // Increment the count of prefixes ending at this node
+    // Insert function for the word.
+    void insert(string word) {
+        auto node = &root;
+        for (char c : word) {
+            // If new prefix, create a new trie node.
+            if (!node->next[c - 'a']) {
+                node->next[c - 'a'] = new TrieNode();
             }
+            // Increment the count of the current prefix.
+            node->next[c - 'a']->cnt++;
+            node = node->next[c - 'a'];
         }
-
-        // Search for a string and return the sum of occurrences of all its prefixes
-        int countOccurrences(const std::string& word) {
-            Node* node = root;
-            int ans = 0;
-            for (char ch : word) {
-                if (!node->containsKey(ch)) {
-                    return ans;  // If a prefix doesn't exist, stop counting
-                }
-                node = node->get(ch);
-                ans += node->getCount();  // Add the count of the current prefix
-            }
-            return ans;  // Return the total count of all prefixes
+    }
+    // Calculate the prefix count using this function.
+    int count(string s) {
+        auto node = &root;
+        int ans = 0;
+        // The ans would store the total sum of counts.
+        for (char c : s) {
+            ans += node->next[c - 'a']->cnt;
+            node = node->next[c - 'a'];
         }
-    };
+        return ans;
+    }
 
     vector<int> sumPrefixScores(vector<string>& words) {
-        Trie trie;
-        vector<int> ans;
-
-        // Insert all words into the Trie
-        for (const auto& word : words) {
-            trie.insert(word);
+        int N = words.size();
+        // Insert words in trie.
+        for (int i = 0; i < N; i++) {
+            insert(words[i]);
         }
-
-        // For each word, calculate the sum of occurrences of all its prefixes
-        for (const auto& word : words) {
-            ans.push_back(trie.countOccurrences(word));
+        vector<int> scores(N, 0);
+        for (int i = 0; i < N; i++) {
+            // Get the count of all prefixes of given string.
+            scores[i] = count(words[i]);
         }
-
-        return ans;
+        return scores;
     }
 };
