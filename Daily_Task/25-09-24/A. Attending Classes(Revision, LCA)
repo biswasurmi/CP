@@ -1,0 +1,197 @@
+https://codeforces.com/gym/105167/problem/A
+///131111129..........
+#include<bits/stdc++.h>
+#include<sstream>
+using namespace std;
+#define ll         long long int
+#define pi          acos(-1)
+#define pb          push_back
+#define mp          make_pair
+#define fi          first
+#define se          second
+#define nl          '\n'
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+#define orderedmultiset tree<ll, null_type,less<ll>, rb_tree_tag,tree_order_statistics_node_update>
+#define ordered_set tree<ll, null_type,less_equal<ll>, rb_tree_tag,tree_order_statistics_node_update>
+//Chess moves.........
+ int dx[] = {+0, +0, -1, +1}; ///Up-down, Left-Right//
+int dy[] = {+1, -1, +0, +0};
+///int dx[] = {+0,+0,+1,-1,-1,+1,-1,+1}; ///King's Move// int dy[] = {-1,+1,+0,+0,+1,+1,-1,-1}; int dx[] = {-2, -2, -1, -1,  1,  1,  2,  2}; ///Knight's Move// int dy[] = {-1,  1, -2,  2, -2,  2, -1,  1};
+//Constants........
+const ll mod = 998244353;
+const ll Max = 1e5 + 5;
+const ll inf = 1e18+5;
+ll fact[Max];
+ll gcd(ll a, ll b){ while (b){ a %= b; swap(a, b);} return a;}
+ll lcm(ll a, ll b){ return (a/gcd(a, b)*b);}
+ll bigmod(ll a,ll b, ll mod){b%=(mod-1);ll result=1ll;while(b>0ll){if(b&1ll) result=result*a%mod;a=a*a%mod;b>>=1ll;}return result;}
+int mul(int x, int y){return (x  * y) % mod;}
+int binpow(int x, int y){int z = 1;while(y){if(y & 1) z = mul(z, x);x = mul(x, x);y >>= 1;}return z;}
+int inv(int x){return binpow(x, mod - 2);}
+int ncr(int a,int b){if(a<0 || b<0)return 0;if(a<b)return 0;int ans=fact[a];ans=(ans*inv(fact[b]))%mod;ans=(ans*inv(fact[a-b]))%mod;return ans;}
+void fac(){fact[0]=fact[1]=1;for(ll i=2;i<Max;i++){fact[i]=(fact[i-1]*i)%mod;}}
+void urmi()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+}
+vector<ll>v[Max];
+ll up[Max][20],lvl[Max],ans[Max],pa[Max];
+void dfs(ll n,ll par,ll lv)
+{
+    lvl[n]=lv;
+    pa[n]=par;
+    for(ll i:v[n]){
+        if(i!=par){
+            dfs(i,n,lv+1);
+        }
+    }
+}
+void binary_lifting(ll src,ll par)
+{
+    //cout<<src<<" "<<par<<" "<<up[src][0]<<nl;
+    up[src][0]=par;
+    for(ll i=1;i<20;i++){
+        if(up[src][i-1]!=-1) up[src][i]=up[up[src][i-1]][i-1];
+        else up[src][i]=-1;
+    }
+    for(ll i:v[src]){
+        if(i!=par){
+            binary_lifting(i,src);
+        }
+    }
+}
+ll query(ll p,ll q)
+{
+    if(lvl[p]<lvl[q]) swap(p,q);
+    ll dis=lvl[p]-lvl[q];
+    for(ll i=19;i>=0;i--){
+        if(dis&(1<<i)){
+            p=up[p][i];
+        }
+    }
+    if(p==q) return p;
+    for(ll i=19;i>=0;i--){
+        if(up[p][i]!=up[q][i]){
+            p=up[p][i];
+            q=up[q][i];
+        }
+    }
+    return up[p][0];
+}
+ll st[Max] = {0}, val[Max];
+void dfs1(ll n, ll vv, ll pa)
+{
+    val[n] = vv;
+    for(auto i : v[n]){
+        if(i == pa) continue;
+        if(n == 1) dfs1(i, (vv * v[n].size()) % mod, n);
+        else dfs1(i, (vv * (v[n].size() - 1)) % mod, n);
+    }
+}
+ll bigmod1(ll a,ll b){
+    if(b==0)return 1;
+    ll x=bigmod1(a,b/2);
+    x=(x*x)%mod;
+    if(b&1)x=(x*(a%mod))%mod;
+    return x;
+}
+
+int main() {
+    urmi();
+    //fac();
+    int test = 1;
+    //cin >> test;
+    for (int i1 = 1; i1 <= test; i1++) {
+        ll n, q;
+        cin >> n >> q;
+        for(ll i = 1; i < n; i++){
+            ll l, r;
+            cin >> l >> r;
+            v[l].pb(r);
+            v[r].pb(l);
+        }
+        dfs(1, -1, 0);
+        binary_lifting(1, -1);
+        for(ll i = 1; i <= n; i++) val[i] = 1;
+        dfs1(1, 1, -1);
+        //for(ll i = 1; i <= n; i++) cout << val[i] << " " ;cout << nl;
+        while(q--){
+            ll l, r;
+            cin >> l >> r;
+            ll c = query(l, r);
+            //cout <<"c "<< c << nl;
+            if(c == l){
+                ll d = val[r];
+                if(l == 1){
+                    cout << val[r] << nl;
+                }
+                else{
+                    ll d1 = bigmod1(val[l], mod - 2);
+                    d = ((d % mod) * (d1 % mod)) % mod;
+                    d1 = bigmod1(v[l].size() - 1, mod - 2);
+                    d = ((d % mod) * (d1 % mod)) % mod;
+                    d = ((d % mod) * (v[l].size() % mod)) % mod;
+                    if(d < 0){
+                        d = (d + mod) % mod;
+                    }
+                    cout << d << nl;
+                }
+            }
+            else if(c == r){
+                ll d = val[l];
+                if(r == 1){
+                    ll d1 = bigmod1(val[r], mod - 2);
+                    d = ((d % mod) * (d1 % mod)) % mod;
+                    d1 = bigmod1(v[r].size(), mod - 2);
+                    d = ((d % mod) * (d1 % mod)) % mod;
+                    d = ((d % mod) * (v[l].size() % mod)) % mod;
+                    if(d < 0){
+                        d = (d + mod) % mod;
+                    }
+                    cout << d << nl;
+                }
+                else{
+                    ll d1 = bigmod1(val[r], mod - 2);
+                    d = ((d % mod) * (d1 % mod)) % mod;
+                    d1 = bigmod1(v[r].size() - 1, mod - 2);
+                    d = ((d % mod) * (d1 % mod)) % mod;
+                    d = ((d % mod) * (v[l].size() % mod)) % mod;
+                    if(d < 0){
+                        d = (d + mod) % mod;
+                    }
+                    cout << d << nl;
+                }
+            }
+            else{
+                ll d1 = val[l];
+                ll d2 = val[r];
+                if(c == 1){
+                    ll d3 = v[c].size();
+                    d3 = (d3 * d3) % mod;
+                    d3 = bigmod1(d3, mod - 2) % mod;
+                    d1 = (d1 * d2) % mod;
+                    d1 = ((d1 % mod) * (d3 % mod)) % mod;
+                    d1 = ((d1 % mod) * (v[c].size() - 1)) % mod;
+                    d1 = ((d1 % mod) * (v[l].size())) % mod;
+                }
+                else{
+                    ll d3 = bigmod1((val[c] * val[c]) % mod, mod - 2) % mod;
+                    d1 = (d1 * d2) % mod;
+                    d1 = ((d1 % mod) * (d3 % mod)) % mod;
+                    d3 = v[c].size() - 1;
+                    d3 = (d3 * d3) % mod;
+                    d3 = bigmod1(d3, mod - 2) % mod;
+                    d1 = ((d1 % mod) * (d3 % mod)) % mod;
+                    d1 = ((d1 % mod) * (v[c].size() - 1)) % mod;
+                    d1 = ((d1 % mod) * (v[l].size())) % mod;
+                }
+                if(d1 < 0) d1 = (d1 + mod) % mod;
+                cout << d1 << nl;
+            }
+        }
+    }
+}
