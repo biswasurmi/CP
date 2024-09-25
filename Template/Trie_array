@@ -1,0 +1,81 @@
+https://leetcode.com/problems/sum-of-prefix-scores-of-strings/?envType=daily-question&envId=2024-09-25
+class Solution {
+public:
+    struct Node {
+        std::unordered_map<char, Node*> link;  
+        int count = 0;  
+
+        bool containsKey(char ch) {
+            return link.find(ch) != link.end();
+        }
+
+        void put(char ch, Node* node) {
+            link[ch] = node;
+        }
+
+        Node* get(char ch) {
+            return link[ch];
+        }
+
+        void increaseCount() {
+            count++;
+        }
+
+        int getCount() {
+            return count;
+        }
+    };
+
+    class Trie {
+    private:
+        Node* root;
+
+    public:
+        Trie() {
+            root = new Node();
+        }
+
+        // Insert a string into the Trie and update character counts
+        void insert(const std::string& word) {
+            Node* node = root;
+            for (char ch : word) {
+                if (!node->containsKey(ch)) {
+                    node->put(ch, new Node());
+                }
+                node = node->get(ch);
+                node->increaseCount();  // Increment the count of prefixes ending at this node
+            }
+        }
+
+        // Search for a string and return the sum of occurrences of all its prefixes
+        int countOccurrences(const std::string& word) {
+            Node* node = root;
+            int ans = 0;
+            for (char ch : word) {
+                if (!node->containsKey(ch)) {
+                    return ans;  // If a prefix doesn't exist, stop counting
+                }
+                node = node->get(ch);
+                ans += node->getCount();  // Add the count of the current prefix
+            }
+            return ans;  // Return the total count of all prefixes
+        }
+    };
+
+    vector<int> sumPrefixScores(vector<string>& words) {
+        Trie trie;
+        vector<int> ans;
+
+        // Insert all words into the Trie
+        for (const auto& word : words) {
+            trie.insert(word);
+        }
+
+        // For each word, calculate the sum of occurrences of all its prefixes
+        for (const auto& word : words) {
+            ans.push_back(trie.countOccurrences(word));
+        }
+
+        return ans;
+    }
+};
