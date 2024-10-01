@@ -1,0 +1,87 @@
+https://leetcode.com/problems/check-if-array-pairs-are-divisible-by-k/description/?envType=daily-question&envId=2024-10-01
+class Solution {
+public:
+    bool canArrange(vector<int>& arr, int k) {
+        vector<int>v(k + 5, 0), v1(k + 5, 0);
+        int cnt = 0;
+        for(int i : arr){
+            if(i < 0){
+                int c = abs(i) % k;
+                if(c == 0){
+                    cnt++;
+                    continue;
+                }
+                v1[c]++;
+            }
+            else{
+                int c = abs(i) % k;
+                if(c == 0){
+                    cnt++;
+                    continue;
+                }
+                v[c]++;
+            }
+        }
+        if(cnt % 2) return false;
+        for(int i : arr){
+            int d = i % k;
+            if(d == 0) continue;
+            if(i < 0){
+                if(!v1[abs(d)]) continue;
+                v1[abs(d)]--;
+            } 
+            else{
+                if(!v[d]) continue;
+                v[d]--;
+            } 
+
+            int c = k - (i % k);
+            c %= k;
+            //cout << i << " " << c << endl;
+            if(c < 0){
+                if(v1[abs(c)]){
+                    v1[abs(c)]--;
+                    continue;
+                }
+            }
+            else{
+                if(v[c]){
+                    v[c]--;
+                    continue;
+                }
+            }
+            c = -(i % k);
+            c %= k;
+            //cout << i << " " << c << endl;
+            if(c < 0){
+                if(v1[abs(c)]){
+                    v1[abs(c)]--;
+                    continue;
+                }
+            }
+            else{
+                if(v[c]){
+                    v[c]--;
+                    continue;
+                }
+            }
+            c = -k - (i % k);
+            c %= k;
+            //cout << i << " " << c << endl;
+            if(c < 0){
+                if(v1[abs(c)]){
+                    v1[abs(c)]--;
+                    continue;
+                }
+            }
+            else{
+                if(v[c]){
+                    v[c]--;
+                    continue;
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+};
