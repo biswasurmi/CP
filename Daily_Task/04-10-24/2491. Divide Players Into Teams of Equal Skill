@@ -1,0 +1,35 @@
+#define ll long long
+class Solution {
+public:
+    long long dividePlayers(vector<int>& skill) {
+        ll sum = 0;
+        map<ll, ll>m;
+        multiset<ll>s;
+        for(int i : skill) m[i]++,sum += i, s.insert(i);
+        sort(skill.begin(), skill.end());
+        ll n = skill.size();
+        ll p = n / 2;
+        if(sum % p){
+            return -1;
+        }
+        sum /= p;
+        ll ans = 0, p1 = p;
+        while(p--){
+            //for(auto it : s) cout << it << " " ;cout << endl;
+            auto it = s.begin();
+            ll c = *it;
+            ll d = sum - c;
+            //cout << c << " " << d << " " << m[c] << " " << m[d] << endl;
+            if(m[d]){
+                ans += c * d;
+            }
+            else return -1;
+            m[d]--;
+            m[c]--;
+            s.erase(s.begin());
+            s.erase(s.find(d));
+            //for(auto it : s) cout << it << " " ;cout << endl;
+        }
+        return ans;
+    }
+};
