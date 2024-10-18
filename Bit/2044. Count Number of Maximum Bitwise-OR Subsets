@@ -1,0 +1,18 @@
+class Solution {
+public:
+    int countMaxOrSubsets(vector<int>& nums) {
+        map<int, int>m;
+        int ans = 0;
+        for(int i = 0; i < (1 << nums.size()); i++){
+            int c = 0;
+            for(int j = 0; j < nums.size(); j++){
+                if(i & (1 << j)){
+                    c |= nums[j];
+                }
+            }
+            ans = max(ans, c);
+            m[c]++;
+        }
+        return m[ans];
+    }
+};
