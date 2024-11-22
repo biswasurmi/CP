@@ -1,0 +1,44 @@
+https://leetcode.com/problems/kth-ancestor-of-a-tree-node/
+
+#define Max 100000
+class TreeAncestor {
+public:
+    vector<int>v[Max];
+    int up[Max][20];
+    void binary_lifting(int src,int par)
+    {
+        up[src][0]=par;
+        for(int i=1;i<20;i++){
+            if(up[src][i-1]!=-1) up[src][i]=up[up[src][i-1]][i-1];
+            else up[src][i]=-1;
+        }
+        for(int i:v[src]){
+            if(i!=par){
+                binary_lifting(i,src);
+            }
+        }
+    }
+    TreeAncestor(int n, vector<int>& parent) {
+        for(int i = 1; i < n; i++){
+            v[i].push_back(parent[i]);
+            v[parent[i]].push_back(i);
+        }
+        memset(up, -1, sizeof(up));
+        binary_lifting(0, -1);
+    }
+    
+    int getKthAncestor(int node, int k) {
+        for(int i = 0; i < 20 and node != -1; i++){
+            if(k & (1 << i)){
+                node = up[node][i];
+            }
+        }
+        return node;
+    }
+};
+
+/**
+ * Your TreeAncestor object will be instantiated and called as such:
+ * TreeAncestor* obj = new TreeAncestor(n, parent);
+ * int param_1 = obj->getKthAncestor(node,k);
+ */
