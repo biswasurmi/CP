@@ -1,0 +1,82 @@
+class Solution {
+public:
+    const int p = 137, mod = 127657753;
+    const int n = 5e4 + 5;
+
+    int power(long long n, long long k, int mod) /// bigmod
+    {
+        int ans = 1 % mod; n %= mod; if(n < 0) n += mod;
+        while(k){
+            if(k & 1) ans = (long long) ans * n % mod;
+            n = (long long) n * n % mod;
+            k >>= 1;
+        }
+        return ans;
+    }
+
+    int ip;
+    int pw[50005], ipw[50005];
+
+    void prec() /// power + inverse power calculation
+    {
+        pw[0] = 1;
+        for(int i = 1; i < n ; i++){
+            pw[i] = 1LL * pw[i - 1] * p % mod;
+        }
+        ip = power(p, mod - 2, mod);
+        ipw[0] = 1;
+        for(int i = 1; i < n; i++){
+            ipw[i] = 1LL * ipw[i - 1] * ip % mod;
+        }
+    }
+
+    int pref[50005];
+
+    void build(vector<int>&s) /// build the prefix array to find substring hash
+    {
+        int n = s.size();
+        for(int i = 0; i < n; i++){
+            pref[i] = 1LL * s[i] * pw[i] % mod;
+            if(i) pref[i] = (pref[i] + pref[i - 1]) % mod;
+        }
+    }
+
+    int get_hash(int i, int j) /// find the hash of a substring
+    {
+        int hs = pref[j];
+        if(i) hs = (hs - pref[i - 1] + mod) % mod;
+        hs = 1LL * hs * ipw[i] % mod;
+        return hs;
+    }
+
+    int beautifulSplits(vector<int>& nums) {
+        int cnt = 0;
+        if(nums.size() < 3) return 0; 
+        prec();
+        build(nums);
+        for(int i = 0; i < nums.size() - 2; i++){
+            for(int j = i + 1; j < nums.size() - 1; j++){
+                int i1 = 0, i2 = i;
+                int j1 = i + 1, j2 = j;
+                int k1 = j + 1, k2 = nums.size() - 1;
+                bool ok = false;
+                if((i2 + 1) <= (j2 - j1 + 1)){
+                    auto it = get_hash(0, i);
+                    auto it1 = get_hash(i + 1, i + 1 + i2);
+                    if(it == it1){
+                        ok = true;
+                    } 
+                }
+                if((j2 - j1 + 1) <= (k2 - k1 + 1)){
+                    auto it = get_hash(j1, j2);
+                    auto it1 = get_hash(k1, k1 + (j2 - j1));
+                    if(it == it1){
+                        ok = true;
+                    } 
+                }
+                if(ok) cnt++;
+            }
+        }
+        return cnt;
+    }
+};
