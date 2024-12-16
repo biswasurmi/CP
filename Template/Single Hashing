@@ -1,3 +1,5 @@
+https://leetcode.com/problems/count-beautiful-splits-in-an-array/
+
 class Solution {
 public:
     const int p = 137, mod = 127657753;
