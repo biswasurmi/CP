@@ -1,0 +1,45 @@
+https://leetcode.com/problems/maximum-sum-of-3-non-overlapping-subarrays/?envType=daily-question&envId=2024-12-29
+
+class Solution {
+public:
+    int func(vector<int>& sum, int k, int idx, int rem, vector<vector<int>>& dp) {
+        if (rem == 0) return 0;
+        if (idx >= sum.size()) return INT_MIN;
+        if (dp[idx][rem] != -1) return dp[idx][rem];
+        int take = sum[idx] + func(sum, k, idx + k, rem - 1, dp);
+        int skip = func(sum, k, idx + 1, rem, dp);
+        dp[idx][rem] = max(take, skip);
+        return dp[idx][rem];
+    }
+
+    void dfs(vector<int>& sum, int k, int idx, int rem, vector<vector<int>>& dp, vector<int>& result) {
+        if (rem == 0 || idx >= sum.size()) return;
+        int take = sum[idx] + func(sum, k, idx + k, rem - 1, dp);
+        int skip = func(sum, k, idx + 1, rem, dp);
+        if (take >= skip) {
+            result.push_back(idx);
+            dfs(sum, k, idx + k, rem - 1, dp, result);
+        } else {
+            dfs(sum, k, idx + 1, rem, dp, result);
+        }
+    }
+
+    vector<int> maxSumOfThreeSubarrays(vector<int>& nums, int k) {
+        int n = nums.size() - k + 1;
+        vector<int> sum(n);
+        int s = 0;
+        for (int i = 0; i < k; i++) {
+            s += nums[i];
+        }
+        sum[0] = s;
+        for (int i = k; i < nums.size(); i++) {
+            s = s - nums[i - k] + nums[i];
+            sum[i - k + 1] = s;
+        }
+        vector<vector<int>> dp(n, vector<int>(4, -1));
+        vector<int> result;
+        func(sum, k, 0, 3, dp);
+        dfs(sum, k, 0, 3, dp, result);
+        return result;
+    }
+};
